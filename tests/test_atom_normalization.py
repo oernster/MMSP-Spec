@@ -144,3 +144,83 @@ class TestAtomEdgeCases:
 </feed>"""
         items = normalize_atom_feed(xml, FEED_URL)
         assert "published" in items[0]
+
+
+class TestAtomLinkEdge:
+    def test_link_with_other_rel_ignored(self):
+        xml = """<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>T</title>
+  <entry>
+    <id>https://example.com/e1</id>
+    <title>Entry</title>
+    <link rel="alternate" href="https://example.com/e1"/>
+    <link rel="self" href="https://example.com/atom/entries/1"/>
+    <published>2026-06-01T00:00:00Z</published>
+  </entry>
+</feed>"""
+        items = normalize_atom_feed(xml, FEED_URL)
+        assert items[0]["url"] == "https://example.com/e1"
+
+    def test_enclosure_without_length_no_size_bytes(self):
+        xml = """<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>T</title>
+  <entry>
+    <id>https://example.com/e1</id>
+    <title>Audio</title>
+    <link rel="alternate" href="https://example.com/e1"/>
+    <link rel="enclosure" href="https://cdn.example.com/a.mp3" type="audio/mpeg"/>
+    <published>2026-06-01T00:00:00Z</published>
+  </entry>
+</feed>"""
+        items = normalize_atom_feed(xml, FEED_URL)
+        assert "size_bytes" not in items[0]["media"][0]
+
+    def test_enclosure_bad_length_no_size_bytes(self):
+        xml = """<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>T</title>
+  <entry>
+    <id>https://example.com/e1</id>
+    <title>Audio</title>
+    <link rel="alternate" href="https://example.com/e1"/>
+    <link rel="enclosure" href="https://cdn.example.com/a.mp3" type="audio/mpeg" length="notanumber"/>
+    <published>2026-06-01T00:00:00Z</published>
+  </entry>
+</feed>"""
+        items = normalize_atom_feed(xml, FEED_URL)
+        assert "size_bytes" not in items[0]["media"][0]
+
+
+class TestAtomAuthorEdge:
+    def test_author_without_uri_no_url(self):
+        xml = """<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>T</title>
+  <entry>
+    <id>https://example.com/e1</id>
+    <title>Entry</title>
+    <link rel="alternate" href="https://example.com/e1"/>
+    <published>2026-06-01T00:00:00Z</published>
+    <author><name>Alice</name></author>
+  </entry>
+</feed>"""
+        items = normalize_atom_feed(xml, FEED_URL)
+        assert items[0]["authors"][0]["name"] == "Alice"
+        assert "url" not in items[0]["authors"][0]
+
+
+class TestAtomSourceMetadataEdge:
+    def test_feed_without_title_no_feed_title_in_source(self):
+        xml = """<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <id>https://example.com/e1</id>
+    <title>Entry</title>
+    <link rel="alternate" href="https://example.com/e1"/>
+    <published>2026-06-01T00:00:00Z</published>
+  </entry>
+</feed>"""
+        items = normalize_atom_feed(xml, FEED_URL)
+        assert "feed_title" not in items[0]["source"]

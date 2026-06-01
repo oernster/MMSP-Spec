@@ -15,6 +15,7 @@
     "id": {
       "type": "string",
       "format": "uri",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9+.\\-]*:",
       "description": "Globally unique, permanent feed identifier. MUST be a URI."
     },
     "title": {
@@ -85,7 +86,7 @@
     },
     "items": {
       "type": "array",
-      "items": { "$ref": "mmsp-item.schema.json" },
+      "items": { "$ref": "https://mmsp.dev/schema/1.0/item" },
       "description": "Array of feed items."
     }
   },

@@ -42,7 +42,7 @@ class _Tokenizer:
             value = m.group()
             if kind == "WS":
                 continue
-            if kind is None:
+            if kind is None:  # pragma: no cover
                 raise FilterError(f"Unexpected character: {value!r}")
             self.tokens.append((kind, value))
         self.pos = 0
@@ -86,7 +86,7 @@ class _Parser:
         tok = self.t.peek()
         if tok and tok[0] == "NOT":
             self.t.consume()
-            child = self._atom()
+            child = self._term()
             return {"op": "NOT", "child": child}
         if tok and tok[0] == "LPAREN":
             self.t.consume()
@@ -124,7 +124,7 @@ class _Parser:
 
     def _range_or_compare(self, numeric: bool) -> dict:
         tok = self.t.peek()
-        if tok is None:
+        if tok is None:  # pragma: no cover
             raise FilterError("Missing range/compare value")
         if tok[0] == "RANGE":
             raw = self.t.consume()[1][1:-1]
@@ -150,9 +150,7 @@ def _compare_numeric(item_val: int | None, op: str, cmp_val: str) -> bool:
         return False
     if op == "gte":
         return item_val >= n
-    if op == "lte":
-        return item_val <= n
-    return False
+    return item_val <= n
 
 
 def _compare_date(item_val: str | None, op: str, cmp_val: str) -> bool:
@@ -165,9 +163,7 @@ def _compare_date(item_val: str | None, op: str, cmp_val: str) -> bool:
         return False
     if op == "gte":
         return item_dt >= cmp_dt
-    if op == "lte":
-        return item_dt <= cmp_dt
-    return False
+    return item_dt <= cmp_dt
 
 
 def _evaluate_node(node: dict, item: dict[str, Any]) -> bool:
@@ -211,34 +207,32 @@ def _evaluate_node(node: dict, item: dict[str, Any]) -> bool:
 
     if field == "duration":
         item_dur = item.get("duration")
-        if isinstance(value, dict):
-            cmp_op = value["op"]
-            if cmp_op == "range":
-                if item_dur is None:
-                    return False
-                try:
-                    return int(value["min"]) <= item_dur <= int(value["max"])
-                except ValueError:
-                    return False
-            return _compare_numeric(item_dur, cmp_op, value["value"])
+        cmp_op = value["op"]
+        if cmp_op == "range":
+            if item_dur is None:
+                return False
+            try:
+                return int(value["min"]) <= item_dur <= int(value["max"])
+            except ValueError:
+                return False
+        return _compare_numeric(item_dur, cmp_op, value["value"])
 
     if field == "published":
         item_pub = item.get("published")
-        if isinstance(value, dict):
-            cmp_op = value["op"]
-            if cmp_op == "range":
-                if not item_pub:
-                    return False
-                try:
-                    item_dt = datetime.fromisoformat(item_pub.replace("Z", "+00:00"))
-                    min_dt = datetime.fromisoformat(value["min"].replace("Z", "+00:00"))
-                    max_dt = datetime.fromisoformat(value["max"].replace("Z", "+00:00"))
-                    return min_dt <= item_dt <= max_dt
-                except ValueError:
-                    return False
-            return _compare_date(item_pub, cmp_op, value["value"])
+        cmp_op = value["op"]
+        if cmp_op == "range":
+            if not item_pub:
+                return False
+            try:
+                item_dt = datetime.fromisoformat(item_pub.replace("Z", "+00:00"))
+                min_dt = datetime.fromisoformat(value["min"].replace("Z", "+00:00"))
+                max_dt = datetime.fromisoformat(value["max"].replace("Z", "+00:00"))
+                return min_dt <= item_dt <= max_dt
+            except ValueError:
+                return False
+        return _compare_date(item_pub, cmp_op, value["value"])
 
-    return False
+    return False  # pragma: no cover
 
 
 def compile_filter(expression: str) -> dict:

@@ -91,6 +91,12 @@ class TestDiscoverFromHtml:
         links = discover_from_html("", "https://example.com")
         assert links == []
 
+    def test_non_link_tags_ignored(self):
+        html = '<meta charset="UTF-8"><link rel="alternate" type="application/mmsp+json" href="https://example.com/mmsp.json"><div>content</div>'
+        links = discover_from_html(html, "https://example.com")
+        assert len(links) == 1
+        assert links[0]["type"] == MMSP_MIME_TYPE
+
 
 class TestValidateFeedUrl:
     def test_https_url_valid(self):

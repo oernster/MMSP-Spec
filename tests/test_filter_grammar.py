@@ -145,6 +145,17 @@ class TestDurationFilter:
         del item["duration"]
         assert not apply_filter("duration:>=100", item)
 
+    def test_duration_gte_non_numeric_returns_false(self):
+        assert not apply_filter("duration:>=abc", VIDEO_ITEM)
+
+    def test_duration_range_null_duration_returns_false(self):
+        item = {**VIDEO_ITEM}
+        del item["duration"]
+        assert not apply_filter("duration:[0,7200]", item)
+
+    def test_duration_range_bad_bounds_returns_false(self):
+        assert not apply_filter("duration:[1T,2Z]", VIDEO_ITEM)
+
 
 class TestPublishedFilter:
     def test_published_gte_match(self):
@@ -166,6 +177,17 @@ class TestPublishedFilter:
         item = {**VIDEO_ITEM}
         del item["published"]
         assert not apply_filter("published:>=2026-01-01T00:00:00Z", item)
+
+    def test_published_gte_non_date_returns_false(self):
+        assert not apply_filter("published:>=notadate", VIDEO_ITEM)
+
+    def test_published_range_null_published_returns_false(self):
+        item = {**VIDEO_ITEM}
+        del item["published"]
+        assert not apply_filter("published:[2026-01-01T00:00:00Z,2026-12-31T23:59:59Z]", item)
+
+    def test_published_range_bad_bounds_returns_false(self):
+        assert not apply_filter("published:[2026-13-01T00:00:00Z,2027-01-01T00:00:00Z]", VIDEO_ITEM)
 
 
 class TestKeywordFilter:
@@ -271,3 +293,19 @@ class TestFilterErrors:
     def test_empty_expression_raises(self):
         with pytest.raises(FilterError):
             compile_filter("")
+
+    def test_value_starts_with_paren_raises(self):
+        with pytest.raises(FilterError):
+            compile_filter("type:(video)")
+
+    def test_duration_missing_value_raises(self):
+        with pytest.raises(FilterError):
+            compile_filter("duration:")
+
+    def test_duration_bad_token_raises(self):
+        with pytest.raises(FilterError):
+            compile_filter("duration:hello")
+
+    def test_non_field_token_at_atom_position_raises(self):
+        with pytest.raises(FilterError):
+            compile_filter(")")

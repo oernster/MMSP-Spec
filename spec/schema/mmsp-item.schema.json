@@ -10,6 +10,7 @@
     "id": {
       "type": "string",
       "format": "uri",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9+.\\-]*:",
       "description": "Globally unique, permanent item identifier."
     },
     "type": {
@@ -196,7 +197,7 @@
       "required": ["id", "title"],
       "additionalProperties": true,
       "properties": {
-        "id": { "type": "string", "format": "uri" },
+        "id": { "type": "string", "format": "uri", "pattern": "^[a-zA-Z][a-zA-Z0-9+.\\-]*:" },
         "title": { "type": "string", "minLength": 1 },
         "episode_number": { "type": "integer", "minimum": 0 },
         "season_number": { "type": "integer", "minimum": 1 },
