@@ -1,0 +1,10 @@
+title: MMSP
+description: MultiMedia Subscription Protocol — a JSON-based pull-only protocol for subscribing to and consuming multimedia content feeds.
+theme: minima
+
+header_pages:
+  - index.md
+  - spec.md
+
+minima:
+  skin: classic
