@@ -26,7 +26,7 @@ MMSP is a pull-only semantic superset of RSS 2.0 and Atom, built around calm con
 
 ## Resources
 
-- [Full Specification](/MMSP-Spec/spec/)
+- [Full Specification]({{ "/spec/" | relative_url }})
 - [JSON Schema (feed)](https://github.com/oernster/MMSP-Spec/blob/main/spec/schema/mmsp-feed.schema.json)
 - [JSON Schema (item)](https://github.com/oernster/MMSP-Spec/blob/main/spec/schema/mmsp-item.schema.json)
 - [Example feeds](https://github.com/oernster/MMSP-Spec/tree/main/spec/examples)
