@@ -47,4 +47,4 @@ Oliver Ernster
 
 ## License
 
-Spec text: CC BY 4.0. Code: MIT.
+Apache License 2.0. See [LICENSE](LICENSE).

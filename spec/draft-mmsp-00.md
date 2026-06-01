@@ -1,11 +1,11 @@
 # The MultiMedia Subscription Protocol (MMSP)
 
 ```
-Internet-Draft: draft-ernster-mmsp-00
+Internet-Draft: draft-mmsp-00
 Date:           June 2026
-Author:         Oliver Ernster
+Author:         MMSP Community
 Status:         Community Specification (Pre-IETF)
-License:        CC BY 4.0
+License:        Apache-2.0
 ```
 
 ---
@@ -705,7 +705,7 @@ This document registers the following media type:
 - Encoding considerations: UTF-8
 - Security considerations: See Section 12
 - Published specification: This document
-- Author: Oliver Ernster
+- Author: MMSP Community
 
 ### 14.2 Well-Known URI Registration
 
