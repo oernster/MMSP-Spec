@@ -6,7 +6,7 @@ protocol with calm consumption as a first-class design constraint.
 
 ## Specification
 
-- **Spec:** `spec/draft-ernster-mmsp-00.md`
+- **Spec:** `spec/draft-mmsp-00.md`
 - **JSON Schema (feed):** `spec/schema/mmsp-feed.schema.json`
 - **JSON Schema (item):** `spec/schema/mmsp-item.schema.json`
 - **Examples:** `spec/examples/`
@@ -43,7 +43,7 @@ Coverage target: 100% of normative spec statements.
 
 ## Author
 
-Oliver Ernster
+MMSP Community
 
 ## License
 

@@ -6,7 +6,7 @@ build-backend = "setuptools.backends.legacy:build"
 name = "mmsp-conformance"
 version = "0.1.0"
 description = "MMSP specification conformance test suite"
-authors = [{ name = "Oliver Ernster" }]
+authors = [{ name = "MMSP Community" }]
 requires-python = ">=3.11"
 dependencies = [
     "jsonschema>=4.23.0",

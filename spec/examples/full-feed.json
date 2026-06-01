@@ -37,8 +37,8 @@
       "description": "<p>A thorough introduction to the MultiMedia Subscription Protocol.</p>",
       "authors": [
         {
-          "name": "Oliver Ernster",
-          "url": "https://codecrafter.uk"
+          "name": "MMSP Community",
+          "url": "https://mmsp.dev"
         }
       ],
       "tags": ["mmsp", "protocol", "tutorial"],

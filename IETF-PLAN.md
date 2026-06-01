@@ -17,7 +17,7 @@ and build an implementer community before IETF submission.
 
 | # | Milestone | Status |
 |---|---|---|
-| 1.1 | Publish draft-ernster-mmsp-00.md to GitHub | In progress |
+| 1.1 | Publish draft-mmsp-00.md to GitHub | In progress |
 | 1.2 | Publish JSON Schema for feed manifest and item | In progress |
 | 1.3 | Publish Python conformance test suite | In progress |
 | 1.4 | Publish reference validator implementation | Pending |
@@ -30,7 +30,7 @@ and build an implementer community before IETF submission.
 
 ### Deliverables
 
-- `spec/draft-ernster-mmsp-00.md`: Full specification text
+- `spec/draft-mmsp-00.md`: Full specification text
 - `spec/schema/`: JSON Schema files for validation
 - `tests/`: Python conformance test suite
 - `spec/examples/`: Annotated feed examples
@@ -59,7 +59,7 @@ Working Group adoption, and progress to RFC.
 2. Validate with `idnits` tool (checks formatting, boilerplate, references)
 3. Submit to IETF Datatracker as Individual Submission:
    `https://datatracker.ietf.org/submit/`
-4. Draft name: `draft-ernster-mmsp-00`
+4. Draft name: `draft-mmsp-00`
 5. Expiry: Internet-Drafts expire after 6 months. Refresh or progress.
 
 #### Step 2: Identify Relevant Working Group
@@ -134,7 +134,7 @@ The following registrations are required before RFC publication:
 - Security considerations: See Section 11 of the spec
 - Fragment identifiers: N/A
 - Restrictions on usage: none
-- Author: Oliver Ernster
+- Author: MMSP Community
 
 ### Well-Known URI Registration
 
@@ -151,14 +151,14 @@ When ready for IETF submission, convert using:
 
 ```bash
 pip install kramdown-rfc
-kdrfc spec/draft-ernster-mmsp-00.md
-# Produces: draft-ernster-mmsp-00.xml and draft-ernster-mmsp-00.txt
+kdrfc spec/draft-mmsp-00.md
+# Produces: draft-mmsp-00.xml and draft-mmsp-00.txt
 ```
 
 Validate with:
 ```bash
 pip install idnits
-idnits draft-ernster-mmsp-00.txt
+idnits draft-mmsp-00.txt
 ```
 
 ---
