@@ -38,7 +38,7 @@ Coverage target: 100% of normative spec statements.
 | `mfeed` | Native MMSP manifest |
 | `rss` | Any RSS 2.0 feed |
 | `atom` | Any Atom 1.0 feed |
-| `podcast` | RSS + iTunes/Podcast Index namespace |
+| `podcast` | RSS + podcast namespace extensions |
 | `platform` | Platform-specific adapter |
 
 ## Author
