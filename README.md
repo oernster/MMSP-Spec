@@ -43,7 +43,7 @@ Coverage target: 100% of normative spec statements.
 
 ## Author
 
-MMSP Community
+Oliver Ernster
 
 ## License
 
