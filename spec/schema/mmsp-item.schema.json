@@ -1,0 +1,250 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mmsp.dev/schema/1.0/item",
+  "title": "MMSP Item",
+  "description": "Schema for a single MMSP item within a feed manifest.",
+  "type": "object",
+  "required": ["id", "type", "title", "url", "published"],
+  "additionalProperties": true,
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uri",
+      "description": "Globally unique, permanent item identifier."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "video", "audio", "article", "image", "short",
+        "document", "gallery", "event", "release",
+        "newsletter", "course", "livestream"
+      ],
+      "description": "Item media type."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable item title."
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "description": "Canonical HTTPS URL of the content."
+    },
+    "published": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Publication datetime in ISO 8601 format with timezone."
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last modification datetime."
+    },
+    "description": {
+      "type": "string",
+      "description": "Item description or summary. HTML permitted; clients MUST sanitize."
+    },
+    "authors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/author" }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "language": {
+      "type": "string",
+      "pattern": "^[a-zA-Z]{2,8}(-[a-zA-Z0-9]{2,8})*$"
+    },
+    "duration": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Duration in seconds."
+    },
+    "media": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/media" }
+    },
+    "thumbnail": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/thumbnail" }
+    },
+    "chapters": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/chapter" }
+    },
+    "transcript": { "$ref": "#/$defs/transcript" },
+    "captions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/caption" }
+    },
+    "series": { "$ref": "#/$defs/series" },
+    "content_rating": { "$ref": "#/$defs/content_rating" },
+    "license": {
+      "type": "string",
+      "description": "Content license. SPDX identifier or URI."
+    },
+    "geo_restriction": { "$ref": "#/$defs/geo_restriction" },
+    "paywall": { "$ref": "#/$defs/paywall" },
+    "live_status": {
+      "type": "string",
+      "enum": ["upcoming", "live", "ended", "archived"],
+      "description": "Livestream status. Only valid for livestream type."
+    },
+    "scheduled_start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Scheduled start time for event and livestream types."
+    },
+    "expires": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Datetime after which content may be unavailable."
+    },
+    "canonical_url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "description": "Canonical URL for cross-source deduplication."
+    },
+    "preview_url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "description": "Short teaser/preview media URL."
+    },
+    "source": { "$ref": "#/$defs/source_meta" },
+    "original": {
+      "type": "object",
+      "description": "Preserved source fields from normalization.",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "author": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "avatar": { "type": "string", "format": "uri", "pattern": "^https://" }
+      }
+    },
+    "media": {
+      "type": "object",
+      "required": ["url", "mime_type"],
+      "additionalProperties": true,
+      "properties": {
+        "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "mime_type": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9!#$&\\-^_]*/[a-zA-Z0-9][a-zA-Z0-9!#$&\\-^_.+]*$" },
+        "size_bytes": { "type": "integer", "minimum": 0 },
+        "duration": { "type": "integer", "minimum": 0 },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "bitrate_kbps": { "type": "integer", "minimum": 0 },
+        "role": { "type": "string", "enum": ["primary", "alternate", "preview"], "default": "primary" },
+        "quality_label": { "type": "string" }
+      }
+    },
+    "thumbnail": {
+      "type": "object",
+      "required": ["url"],
+      "additionalProperties": true,
+      "properties": {
+        "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "chapter": {
+      "type": "object",
+      "required": ["title", "start_seconds"],
+      "additionalProperties": true,
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "start_seconds": { "type": "integer", "minimum": 0 },
+        "end_seconds": { "type": "integer", "minimum": 0 },
+        "image_url": { "type": "string", "format": "uri", "pattern": "^https://" }
+      }
+    },
+    "transcript": {
+      "type": "object",
+      "required": ["url", "mime_type"],
+      "additionalProperties": true,
+      "properties": {
+        "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "mime_type": { "type": "string" },
+        "language": { "type": "string", "pattern": "^[a-zA-Z]{2,8}(-[a-zA-Z0-9]{2,8})*$" }
+      }
+    },
+    "caption": {
+      "type": "object",
+      "required": ["url", "mime_type", "language"],
+      "additionalProperties": true,
+      "properties": {
+        "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "mime_type": { "type": "string" },
+        "language": { "type": "string", "pattern": "^[a-zA-Z]{2,8}(-[a-zA-Z0-9]{2,8})*$" },
+        "label": { "type": "string" }
+      }
+    },
+    "series": {
+      "type": "object",
+      "required": ["id", "title"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "string", "format": "uri" },
+        "title": { "type": "string", "minLength": 1 },
+        "episode_number": { "type": "integer", "minimum": 0 },
+        "season_number": { "type": "integer", "minimum": 1 },
+        "total_episodes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "content_rating": {
+      "type": "object",
+      "required": ["rating"],
+      "additionalProperties": true,
+      "properties": {
+        "rating": { "type": "string", "enum": ["general", "teen", "mature", "explicit"] },
+        "system": { "type": "string" },
+        "descriptors": { "type": "array", "items": { "type": "string" } },
+        "spoiler": { "type": "boolean", "default": false }
+      }
+    },
+    "geo_restriction": {
+      "type": "object",
+      "required": ["type", "regions"],
+      "additionalProperties": true,
+      "properties": {
+        "type": { "type": "string", "enum": ["allowlist", "blocklist"] },
+        "regions": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Z]{2}$" },
+          "minItems": 1
+        }
+      }
+    },
+    "paywall": {
+      "type": "object",
+      "required": ["paywalled"],
+      "additionalProperties": true,
+      "properties": {
+        "paywalled": { "type": "boolean" },
+        "preview_available": { "type": "boolean" }
+      }
+    },
+    "source_meta": {
+      "type": "object",
+      "required": ["type", "feed_url"],
+      "additionalProperties": true,
+      "properties": {
+        "type": { "type": "string", "enum": ["mfeed", "rss", "atom", "podcast", "platform"] },
+        "feed_url": { "type": "string" },
+        "feed_title": { "type": "string" }
+      }
+    }
+  }
+}

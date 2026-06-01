@@ -1,0 +1,196 @@
+{
+  "mmsp": "1.0",
+  "id": "https://media.example.com/feeds/all",
+  "title": "Example Media Channel",
+  "description": "A comprehensive example of an MMSP feed with multimedia content.",
+  "feed_url": "https://media.example.com/.well-known/mmsp.json",
+  "icon": "https://media.example.com/assets/icon.png",
+  "language": "en",
+  "authors": [
+    {
+      "name": "Example Publisher",
+      "url": "https://media.example.com/about",
+      "avatar": "https://media.example.com/assets/avatar.png"
+    }
+  ],
+  "tags": ["technology", "media"],
+  "contact": "feed@media.example.com",
+  "capabilities": ["conditional-get", "pagination"],
+  "poll": {
+    "min_interval_seconds": 600,
+    "recommended_interval_seconds": 3600,
+    "ttl_seconds": 86400
+  },
+  "pagination": {
+    "cursor": "2026-06-01T00:00:00Z",
+    "has_more": true
+  },
+  "next_url": "https://media.example.com/.well-known/mmsp.json?before=2026-06-01T00:00:00Z",
+  "items": [
+    {
+      "id": "https://media.example.com/videos/intro-to-mmsp",
+      "type": "video",
+      "title": "Introduction to MMSP",
+      "url": "https://media.example.com/videos/intro-to-mmsp",
+      "published": "2026-06-01T10:00:00Z",
+      "updated": "2026-06-01T11:00:00Z",
+      "description": "<p>A thorough introduction to the MultiMedia Subscription Protocol.</p>",
+      "authors": [
+        {
+          "name": "Oliver Ernster",
+          "url": "https://codecrafter.uk"
+        }
+      ],
+      "tags": ["mmsp", "protocol", "tutorial"],
+      "language": "en",
+      "duration": 1847,
+      "canonical_url": "https://media.example.com/videos/intro-to-mmsp",
+      "media": [
+        {
+          "url": "https://cdn.example.com/videos/intro-to-mmsp-1080p.mp4",
+          "mime_type": "video/mp4",
+          "size_bytes": 524288000,
+          "duration": 1847,
+          "width": 1920,
+          "height": 1080,
+          "bitrate_kbps": 4000,
+          "role": "primary",
+          "quality_label": "1080p"
+        },
+        {
+          "url": "https://cdn.example.com/videos/intro-to-mmsp-720p.mp4",
+          "mime_type": "video/mp4",
+          "size_bytes": 209715200,
+          "duration": 1847,
+          "width": 1280,
+          "height": 720,
+          "bitrate_kbps": 2000,
+          "role": "alternate",
+          "quality_label": "720p"
+        }
+      ],
+      "thumbnail": [
+        {
+          "url": "https://cdn.example.com/thumbnails/intro-to-mmsp-1280x720.jpg",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "url": "https://cdn.example.com/thumbnails/intro-to-mmsp-640x360.jpg",
+          "width": 640,
+          "height": 360
+        }
+      ],
+      "chapters": [
+        {
+          "title": "Introduction",
+          "start_seconds": 0,
+          "end_seconds": 120
+        },
+        {
+          "title": "Design Principles",
+          "start_seconds": 120,
+          "end_seconds": 600
+        },
+        {
+          "title": "Feed Manifest Schema",
+          "start_seconds": 600,
+          "end_seconds": 1200
+        },
+        {
+          "title": "Poll Semantics",
+          "start_seconds": 1200,
+          "end_seconds": 1847
+        }
+      ],
+      "transcript": {
+        "url": "https://cdn.example.com/transcripts/intro-to-mmsp.txt",
+        "mime_type": "text/plain",
+        "language": "en"
+      },
+      "captions": [
+        {
+          "url": "https://cdn.example.com/captions/intro-to-mmsp.en.vtt",
+          "mime_type": "text/vtt",
+          "language": "en",
+          "label": "English"
+        },
+        {
+          "url": "https://cdn.example.com/captions/intro-to-mmsp.fr.vtt",
+          "mime_type": "text/vtt",
+          "language": "fr",
+          "label": "French"
+        }
+      ],
+      "series": {
+        "id": "https://media.example.com/series/mmsp-guide",
+        "title": "MMSP Guide",
+        "episode_number": 1,
+        "season_number": 1,
+        "total_episodes": 6
+      },
+      "content_rating": {
+        "rating": "general",
+        "spoiler": false
+      },
+      "license": "CC-BY-4.0",
+      "preview_url": "https://cdn.example.com/previews/intro-to-mmsp-30s.mp4"
+    },
+    {
+      "id": "https://media.example.com/articles/mmsp-spec-released",
+      "type": "article",
+      "title": "MMSP Specification v0.1 Released",
+      "url": "https://media.example.com/articles/mmsp-spec-released",
+      "published": "2026-06-01T08:00:00Z",
+      "description": "<p>The first community draft of the MMSP specification is now available.</p>",
+      "tags": ["announcement", "mmsp"],
+      "language": "en"
+    },
+    {
+      "id": "https://media.example.com/audio/mmsp-podcast-ep1",
+      "type": "audio",
+      "title": "MMSP Podcast Episode 1",
+      "url": "https://media.example.com/audio/mmsp-podcast-ep1",
+      "published": "2026-05-28T09:00:00Z",
+      "duration": 3240,
+      "media": [
+        {
+          "url": "https://cdn.example.com/audio/mmsp-podcast-ep1.mp3",
+          "mime_type": "audio/mpeg",
+          "size_bytes": 77760000,
+          "duration": 3240,
+          "bitrate_kbps": 192,
+          "role": "primary"
+        }
+      ],
+      "series": {
+        "id": "https://media.example.com/series/mmsp-podcast",
+        "title": "MMSP Podcast",
+        "episode_number": 1,
+        "season_number": 1
+      },
+      "paywall": {
+        "paywalled": false
+      }
+    },
+    {
+      "id": "https://media.example.com/events/mmsp-launch-webinar",
+      "type": "event",
+      "title": "MMSP Launch Webinar",
+      "url": "https://media.example.com/events/mmsp-launch-webinar",
+      "published": "2026-05-20T00:00:00Z",
+      "scheduled_start": "2026-07-01T17:00:00Z",
+      "description": "<p>Join us for a live discussion of the MMSP specification.</p>",
+      "tags": ["webinar", "live"]
+    },
+    {
+      "id": "https://media.example.com/releases/mmsp-validator-1-0-0",
+      "type": "release",
+      "title": "mmsp-validator 1.0.0",
+      "url": "https://media.example.com/releases/mmsp-validator-1-0-0",
+      "published": "2026-06-01T14:00:00Z",
+      "description": "<p>Initial release of the MMSP reference validator.</p>",
+      "tags": ["release", "tooling"]
+    }
+  ]
+}

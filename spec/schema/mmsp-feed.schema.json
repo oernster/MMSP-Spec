@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mmsp.dev/schema/1.0/feed",
+  "title": "MMSP Feed Manifest",
+  "description": "Schema for an MMSP 1.0 feed manifest document.",
+  "type": "object",
+  "required": ["mmsp", "id", "title", "feed_url", "items"],
+  "additionalProperties": true,
+  "properties": {
+    "mmsp": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Protocol version. MUST be '1.0' for this revision."
+    },
+    "id": {
+      "type": "string",
+      "format": "uri",
+      "description": "Globally unique, permanent feed identifier. MUST be a URI."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable feed title."
+    },
+    "feed_url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "description": "Canonical HTTPS URL of this feed manifest."
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of the feed."
+    },
+    "icon": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "description": "Feed icon image URL. MUST use HTTPS."
+    },
+    "language": {
+      "type": "string",
+      "pattern": "^[a-zA-Z]{2,8}(-[a-zA-Z0-9]{2,8})*$",
+      "description": "Primary BCP 47 language tag."
+    },
+    "authors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/author" }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "contact": {
+      "type": "string",
+      "format": "email",
+      "description": "Publisher contact email address."
+    },
+    "poll": { "$ref": "#/$defs/poll" },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["conditional-get", "pagination", "filter-metadata"]
+      }
+    },
+    "moved_to": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "description": "Permanent relocation URL. MUST use HTTPS."
+    },
+    "deprecated": { "$ref": "#/$defs/deprecation" },
+    "bundle_id": {
+      "type": "string",
+      "format": "uri",
+      "description": "Groups related feeds from the same publisher."
+    },
+    "pagination": { "$ref": "#/$defs/pagination" },
+    "next_url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "description": "URL of next page of items (older content)."
+    },
+    "items": {
+      "type": "array",
+      "items": { "$ref": "mmsp-item.schema.json" },
+      "description": "Array of feed items."
+    }
+  },
+  "$defs": {
+    "author": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "avatar": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        }
+      }
+    },
+    "poll": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "min_interval_seconds": {
+          "type": "integer",
+          "minimum": 300,
+          "description": "Minimum seconds between polls. Floor is 300."
+        },
+        "recommended_interval_seconds": {
+          "type": "integer",
+          "minimum": 300,
+          "description": "Recommended polling interval in seconds."
+        },
+        "ttl_seconds": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Time-to-live for cached items in seconds."
+        }
+      }
+    },
+    "deprecation": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "sunset_date": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pagination": {
+      "type": "object",
+      "required": ["cursor", "has_more"],
+      "additionalProperties": true,
+      "properties": {
+        "cursor": {
+          "type": "string",
+          "description": "Opaque cursor for current page position."
+        },
+        "has_more": {
+          "type": "boolean",
+          "description": "Whether older items exist beyond this page."
+        }
+      }
+    }
+  }
+}

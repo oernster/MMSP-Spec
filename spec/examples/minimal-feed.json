@@ -1,0 +1,15 @@
+{
+  "mmsp": "1.0",
+  "id": "https://example.com/feeds/main",
+  "title": "Example Feed",
+  "feed_url": "https://example.com/.well-known/mmsp.json",
+  "items": [
+    {
+      "id": "https://example.com/articles/hello-world",
+      "type": "article",
+      "title": "Hello, World",
+      "url": "https://example.com/articles/hello-world",
+      "published": "2026-06-01T12:00:00Z"
+    }
+  ]
+}
