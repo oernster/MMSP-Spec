@@ -1,4 +1,4 @@
-# <img width="128" height="128" alt="meridian-icon" src="https://github.com/user-attachments/assets/aed9cd43-f80d-498a-8d92-b8e1ac28610d" /> MMSP - MultiMedia Subscription Protocol
+# <img width="128" height="128" alt="meridian" src="https://github.com/user-attachments/assets/e8116858-fa7e-43c9-9600-3ce5264757e0" /> MMSP - MultiMedia Subscription Protocol
 
 [Specification here](https://oernster.github.io/MMSP-Spec/)
 
