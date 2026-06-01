@@ -1,4 +1,4 @@
-# MMSP — MultiMedia Subscription Protocol
+# MMSP - MultiMedia Subscription Protocol
 
 [Specification here](https://oernster.github.io/MMSP-Spec/)
 
