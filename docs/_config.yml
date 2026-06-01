@@ -1,12 +1,22 @@
 title: MMSP
-description: MultiMedia Subscription Protocol — a JSON-based pull-only protocol for subscribing to and consuming multimedia content feeds.
+description: MultiMedia Subscription Protocol — a JSON-based pull-only protocol for subscribing to and consuming multimedia content feeds. Open community specification, semantic superset of RSS and Atom.
 url: https://oernster.github.io
 baseurl: /MMSP-Spec
+lang: en
 theme: minima
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
 
 header_pages:
   - index.md
   - spec.md
+
+social:
+  name: MMSP Community
+  links:
+    - https://github.com/oernster/MMSP-Spec
 
 minima:
   skin: classic

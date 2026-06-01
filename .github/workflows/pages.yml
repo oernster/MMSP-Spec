@@ -22,7 +22,7 @@ jobs:
 
       - name: Inject spec into docs
         run: |
-          printf -- '---\nlayout: default\ntitle: Specification\npermalink: /spec/\n---\n\n' \
+          printf -- '---\nlayout: default\ntitle: MMSP Specification — draft-mmsp-00\ndescription: Full text of the MultiMedia Subscription Protocol specification. Defines feed manifest schema, item types, source types, poll semantics, discovery, normalization, and filter grammar.\npermalink: /spec/\n---\n\n' \
             | cat - spec/draft-mmsp-00.md > docs/spec.md
 
       - uses: actions/configure-pages@v5
