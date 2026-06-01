@@ -1,5 +1,7 @@
 # MMSP — MultiMedia Subscription Protocol
 
+[Specification here](https://oernster.github.io/MMSP-Spec/)
+
 A community specification for multimedia feed subscription, designed as a
 semantic superset of RSS 2.0 and Atom. MMSP is a pull-only, JSON-based
 protocol with calm consumption as a first-class design constraint.
