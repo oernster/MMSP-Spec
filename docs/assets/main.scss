@@ -78,7 +78,7 @@ table tr:nth-child(even) td { background-color: #111118 !important; }
 
 .site-nav {
   background-color: #111118 !important;
-  border: 1px solid #1d1d2a !important;
+  border: none !important;
 }
 .site-nav .page-link {
   color: #e2e8f0 !important;
@@ -87,6 +87,9 @@ table tr:nth-child(even) td { background-color: #111118 !important; }
 }
 .site-nav .page-link:hover { color: #f7f6ff !important; }
 .site-nav .trigger { background-color: #111118 !important; }
+@media screen and (max-width: 600px) {
+  .site-nav { border: 1px solid #1d1d2a !important; }
+}
 .menu-icon > svg path { fill: #3a7aff !important; }
 
 .site-footer {
