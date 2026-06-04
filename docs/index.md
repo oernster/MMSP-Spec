@@ -1,5 +1,5 @@
 ---
-layout: home
+layout: default
 title: MMSP — MultiMedia Subscription Protocol
 description: Open community specification for multimedia feed subscription. JSON-based, pull-only, calm consumption. Semantic superset of RSS 2.0 and Atom.
 keywords: MMSP, multimedia subscription protocol, RSS, Atom, JSON feed, podcast feed, open standard, IETF, feed reader, calm consumption, multimedia syndication
