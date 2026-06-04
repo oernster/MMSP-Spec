@@ -2,84 +2,38 @@
 <html lang="{{ page.lang | default: site.lang | default: "en" }}">
   {%- include head.html -%}
   <style>
-    html, body {
-      background-color: #1e1e2e !important;
-      color: #cdd6f4 !important;
-    }
-    a { color: #89b4fa !important; }
-    a:hover { color: #cba6f7 !important; }
-    a:visited { color: #b4befe !important; }
-    h1, h2, h3, h4, h5, h6 { color: #cba6f7 !important; }
-    strong { color: #cdd6f4 !important; }
-    li { color: #cdd6f4 !important; }
-    p { color: #cdd6f4 !important; }
-    code {
-      background-color: #11111b !important;
-      color: #a6e3a1 !important;
-      border: 1px solid #313244 !important;
-      border-radius: 4px;
-      padding: 2px 4px;
-    }
-    pre {
-      background-color: #11111b !important;
-      border: 1px solid #313244 !important;
-      border-radius: 6px;
-      padding: 1rem !important;
-    }
-    pre code {
-      border: none !important;
-      background: transparent !important;
-      padding: 0 !important;
-    }
-    blockquote {
-      color: #bac2de !important;
-      border-left: 4px solid #cba6f7 !important;
-      background: #181825 !important;
-      padding: 0.5rem 1rem !important;
-    }
-    hr { border-color: #313244 !important; }
+    html, body { background-color: #09090d !important; color: #e2e8f0 !important; }
+    a { color: #3a7aff !important; }
+    a:hover { color: #4f8cff !important; }
+    a:visited { color: #7aaaff !important; }
+    h1, h2, h3, h4, h5, h6 { color: #f7f6ff !important; }
+    strong { color: #f7f6ff !important; }
+    p { color: #e2e8f0 !important; }
+    li { color: #e2e8f0 !important; }
+    code { background-color: #111118 !important; color: #7aaaff !important; border: 1px solid #1d1d2a !important; border-radius: 4px; padding: 2px 4px; }
+    pre { background-color: #111118 !important; border: 1px solid #1d1d2a !important; border-radius: 6px; padding: 1rem !important; }
+    pre code { border: none !important; background: transparent !important; padding: 0 !important; }
+    blockquote { color: #e2e8f0 !important; border-left: 4px solid #3a7aff !important; background: #111118 !important; padding: 0.5rem 1rem !important; }
+    hr { border-color: #1d1d2a !important; }
     table { border-collapse: collapse !important; }
-    table th {
-      background-color: #313244 !important;
-      color: #cdd6f4 !important;
-      border: 1px solid #45475a !important;
-    }
-    table td {
-      background-color: #1e1e2e !important;
-      color: #cdd6f4 !important;
-      border: 1px solid #313244 !important;
-    }
-    table tr:nth-child(even) td { background-color: #181825 !important; }
-    .wrapper { background-color: #1e1e2e !important; }
-    .site-header {
-      background-color: #181825 !important;
-      border-top: 4px solid #cba6f7 !important;
-      border-bottom: 1px solid #313244 !important;
-      padding-top: 8px !important;
-      padding-bottom: 8px !important;
-    }
-    .site-title, .site-title:visited {
-      color: #cba6f7 !important;
-      padding-right: 16px !important;
-    }
-    .site-nav {
-      background-color: #181825 !important;
-      border: 1px solid #313244 !important;
-    }
-    .site-nav .page-link { color: #bac2de !important; padding-left: 8px !important; padding-right: 8px !important; }
-    .site-nav .page-link:hover { color: #cdd6f4 !important; }
-    .site-nav .trigger { background-color: #181825 !important; }
-    .menu-icon > svg path { fill: #cba6f7 !important; }
-    .site-footer {
-      background-color: #181825 !important;
-      border-top: 1px solid #313244 !important;
-      color: #a6adc8 !important;
-    }
-    .footer-col-wrapper { color: #a6adc8 !important; }
-    .footer-col-wrapper a, .footer-col-wrapper a:visited { color: #89b4fa !important; }
-    .page-content { background-color: #1e1e2e !important; }
-    .post-meta { color: #a6adc8 !important; }
-    .highlight { background-color: #11111b !important; }
+    table th { background-color: #111118 !important; color: #f7f6ff !important; border: 1px solid #1d1d2a !important; }
+    table td { background-color: #09090d !important; color: #e2e8f0 !important; border: 1px solid #1d1d2a !important; }
+    table tr:nth-child(even) td { background-color: #111118 !important; }
+    .wrapper { background-color: #09090d !important; }
+    .site-header { background-color: #111118 !important; border-top: 4px solid #3a7aff !important; border-bottom: 1px solid #1d1d2a !important; padding-top: 8px !important; padding-bottom: 8px !important; }
+    .site-title, .site-title:visited { color: #f7f6ff !important; padding-right: 16px !important; }
+    .site-nav { background-color: #111118 !important; border: 1px solid #1d1d2a !important; }
+    .site-nav .page-link { color: #e2e8f0 !important; padding-left: 8px !important; padding-right: 8px !important; }
+    .site-nav .page-link:hover { color: #f7f6ff !important; }
+    .site-nav .trigger { background-color: #111118 !important; }
+    .menu-icon > svg path { fill: #3a7aff !important; }
+    .site-footer { background-color: #111118 !important; border-top: 1px solid #1d1d2a !important; color: #a0aec0 !important; }
+    .footer-col-wrapper { color: #a0aec0 !important; }
+    .footer-col-wrapper a, .footer-col-wrapper a:visited { color: #3a7aff !important; }
+    .page-content { background-color: #09090d !important; }
+    .page-content .wrapper { background-color: #09090d !important; }
+    .post-meta { color: #a0aec0 !important; }
+    .highlight { background-color: #111118 !important; }
     .highlight .err { background-color: transparent !important; }
   </style>
   <body>
