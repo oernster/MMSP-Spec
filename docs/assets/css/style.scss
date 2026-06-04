@@ -1,0 +1,113 @@
+---
+---
+
+@import "minima";
+
+html, body {
+  background-color: #1e1e2e;
+  color: #cdd6f4;
+}
+
+a {
+  color: #89b4fa;
+  &:hover { color: #cba6f7; }
+  &:visited { color: #b4befe; }
+}
+
+h1, h2, h3, h4, h5, h6 { color: #cba6f7; }
+strong { color: #cdd6f4; }
+
+code {
+  background-color: #11111b;
+  color: #a6e3a1;
+  border: 1px solid #313244;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+pre {
+  background-color: #11111b;
+  border: 1px solid #313244;
+  border-radius: 6px;
+  code {
+    border: none;
+    background: transparent;
+    padding: 0;
+  }
+}
+
+blockquote {
+  color: #bac2de;
+  border-left: 4px solid #cba6f7;
+  background: #181825;
+  padding: 0.5rem 1rem;
+}
+
+hr { border-color: #313244; }
+
+table {
+  border-collapse: collapse;
+  th {
+    background-color: #313244;
+    color: #cdd6f4;
+    border: 1px solid #45475a;
+  }
+  td {
+    background-color: #1e1e2e;
+    color: #cdd6f4;
+    border: 1px solid #313244;
+  }
+  tr:nth-child(even) td { background-color: #181825; }
+}
+
+.wrapper { background-color: #1e1e2e; }
+
+.site-header {
+  background-color: #181825;
+  border-top: 4px solid #cba6f7;
+  border-bottom: 1px solid #313244;
+}
+
+.site-title {
+  color: #cba6f7;
+  &:visited { color: #cba6f7; }
+}
+
+.site-nav {
+  background-color: #181825;
+  border: 1px solid #313244;
+  .page-link {
+    color: #bac2de;
+    &:hover { color: #cdd6f4; }
+  }
+  .trigger { background-color: #181825; }
+  .menu-icon > svg path { fill: #cba6f7; }
+}
+
+.site-footer {
+  background-color: #181825;
+  border-top: 1px solid #313244;
+  color: #a6adc8;
+}
+
+.footer-col-wrapper {
+  color: #a6adc8;
+  a, a:visited { color: #89b4fa; }
+}
+
+.page-content {
+  background-color: #1e1e2e;
+  .wrapper { background-color: #1e1e2e; }
+}
+
+.post-list {
+  background-color: #1e1e2e;
+  li { background-color: #1e1e2e; }
+}
+
+.post-meta { color: #a6adc8; }
+
+.highlight {
+  background-color: #11111b;
+  .err { background-color: transparent; }
+}
