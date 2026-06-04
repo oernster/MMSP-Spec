@@ -10,7 +10,6 @@ plugins:
   - jekyll-sitemap
 
 header_pages:
-  - index.md
   - spec.md
 
 social:
