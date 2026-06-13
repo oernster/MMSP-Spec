@@ -19,10 +19,14 @@ syndication to cover rich multimedia content including video, audio,
 articles, images, short-form content, documents, galleries, events,
 software releases, newsletters, courses, and livestreams.
 
-MMSP is designed around a "calm consumption" model: it is a pull-only
-protocol with no server-push mechanism, no client notification
-requirement, and a mandatory minimum poll interval. Subscribers
-consume feeds when they choose to, not when publishers demand attention.
+MMSP is designed around a "calm consumption" model. At the wire level it
+guarantees this through two enforceable properties: it is pull-only, with
+no server-push mechanism, and it mandates a minimum poll interval.
+Presentation behaviour, such as whether a client raises notifications, is
+out of scope for the base protocol; clients that wish to commit to calm
+behaviour MAY conform to the optional Calm Consumption Profile (Section
+4.1). Subscribers consume feeds when they choose to, not when publishers
+demand attention.
 
 ---
 
@@ -43,9 +47,12 @@ MMSP addresses three gaps:
    type (RSS, Atom, podcast feeds) normalizes into a single item schema,
    allowing unified consumption regardless of origin format.
 
-3. **Calm consumption**: the protocol mandates pull-only behaviour and
-   a minimum poll interval. No mechanism for server-initiated push or
-   client-side notification is defined or permitted by this specification.
+3. **Calm consumption**: at the wire level the protocol guarantees
+   pull-only behaviour and a minimum poll interval, and defines no
+   server-push mechanism. How a client surfaces new items to a subscriber,
+   including whether it notifies, is a client-presentation concern outside
+   the base protocol; clients MAY additionally conform to the optional
+   Calm Consumption Profile (Section 4.1).
 
 ### 1.1 Motivation
 
@@ -130,7 +137,7 @@ Publisher                         Client                    Subscriber
     |<------------------------------|                            |
     |  200 OK + Feed Manifest JSON  |                            |
     |------------------------------>|                            |
-    |                               |  (stores, does not notify) |
+    |                               |  (stores new items)        |
     |                               |                            |
     |                               |  subscriber opens reader   |
     |                               |<---------------------------|
@@ -138,8 +145,35 @@ Publisher                         Client                    Subscriber
     |                               |--------------------------->|
 ```
 
-The client MUST NOT notify the subscriber of new items without an
-explicit subscriber action to open or refresh the reader interface.
+The base protocol defines no notification mechanism and places no
+normative requirement on how a client surfaces newly polled items to a
+subscriber; this is a client-presentation concern. Clients that wish to
+make an explicit commitment to calm behaviour MAY conform to the optional
+Calm Consumption Profile defined below.
+
+### 4.1 Calm Consumption Profile (Optional)
+
+The Calm Consumption Profile is an optional conformance profile that a
+client MAY claim. It exists so that "calm consumption" can be a concrete,
+self-certified commitment without placing unobservable requirements on the
+wire protocol.
+
+A client claiming conformance to the Calm Consumption Profile:
+
+- MUST NOT raise interruptive notifications (system push notifications,
+  sounds, vibration, or badge counts) as a result of polling a feed.
+- MUST surface newly polled items only in response to an explicit
+  subscriber action, such as opening or refreshing the reader interface.
+- MAY display a passive, non-interruptive unread indicator within its own
+  interface.
+
+Because notification behaviour is not observable on the wire, conformance
+to this profile cannot be verified by a publisher or by an on-the-wire
+conformance test; it is a commitment a client makes to its subscribers,
+not a property a publisher can test. This separation is deliberate: the
+base protocol carries only requirements that are observable and
+enforceable on the wire, and the calm-presentation contract lives here, as
+a profile, rather than as an untestable MUST in the core.
 
 ---
 
@@ -152,7 +186,7 @@ A feed manifest is a JSON object served over HTTPS. The media type is
 
 | Field | Type | Description |
 |---|---|---|
-| `mmsp` | string | Protocol version. MUST be `"1.0"` for this revision. |
+| `mmsp` | string | Protocol version, of the form `MAJOR.MINOR`. MUST be `"1.0"` for this revision. Version semantics are defined in Section 5.7. |
 | `id` | string (URI) | Globally unique, permanent identifier for the feed. MUST be a URI. MUST NOT change after publication. |
 | `title` | string | Human-readable feed title. |
 | `feed_url` | string (HTTPS URL) | Canonical URL of this feed manifest. MUST use HTTPS. |
@@ -197,10 +231,95 @@ by this feed. Defined capability strings:
 
 ### 5.5 Pagination Object
 
+A feed manifest returns the newest items inline. Older items are retrieved
+by walking pages backwards in time. A publisher that offers historical
+items beyond the first page SHOULD include a `pagination` object and a
+`next_url`.
+
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `cursor` | string | REQUIRED | Opaque cursor for current page position. |
+| `cursor` | string | REQUIRED | Opaque, server-generated cursor identifying this page boundary. Clients MUST treat it as opaque and MUST NOT parse or construct it. |
 | `has_more` | boolean | REQUIRED | Whether older items exist beyond this page. |
+
+#### 5.5.1 Walking Pages
+
+- When `has_more` is `true`, the manifest MUST include `next_url`. The
+  client retrieves the next (older) page by issuing a poll to `next_url`.
+- When `has_more` is `false`, the client has reached the end of the
+  available history and MUST NOT request further pages.
+- A client performing a backfill walk MUST follow `next_url` values only;
+  it MUST NOT synthesise page URLs or numeric offsets of its own.
+
+#### 5.5.2 Consistency Under Mutation
+
+Feeds change between page fetches as new items are published. To prevent
+items being skipped or duplicated during a backfill walk, the `cursor`
+MUST anchor a page to a stable ordering position, defined as descending
+`published` with item `id` as a tie-breaker, rather than to a numeric
+offset. Items published at the head of the feed after a walk begins MUST
+NOT alter the set of items reachable from an already-issued `cursor`. A
+publisher MUST keep a cursor resolvable for at least the feed's
+`ttl_seconds` (Section 8.1) and SHOULD keep it resolvable for
+substantially longer. A client that receives an error or an unresolvable
+cursor MUST restart the walk from the feed manifest rather than guessing a
+position.
+
+#### 5.5.3 Termination and Loop Safety
+
+A client MUST bound a backfill walk. It MUST stop when `has_more` is
+`false`, when `next_url` is absent, or when it observes a `cursor` value it
+has already seen during the current walk. A client SHOULD additionally
+impose an implementation-defined maximum page count per walk so that a
+misbehaving or hostile publisher cannot drive an unbounded fetch loop.
+
+### 5.6 Feed Validation and Error Handling
+
+A client MUST validate a feed manifest before use and MUST fail safely when
+validation does not pass. A failed poll MUST NOT discard previously stored,
+valid items for that feed.
+
+- **Malformed JSON.** If the response body does not parse as JSON, the
+  client MUST treat the poll as failed, MUST retain the last known-good
+  state of the feed, and SHOULD surface a fetch error for that feed to the
+  subscriber. The client MUST apply back-off (Section 8.3) rather than
+  immediately re-polling.
+- **Wrong media type.** If the response is not `application/mmsp+json`,
+  and is not a recognised RSS/Atom/podcast source being normalized, the
+  client SHOULD treat the poll as failed.
+- **Missing or mistyped required fields.** If any field REQUIRED by
+  Section 5.1 is absent, or is present with the wrong JSON type, the
+  manifest is invalid; the client MUST reject the manifest as a whole and
+  retain the last known-good state.
+- **Unknown manifest members.** A client MUST ignore any feed-level member
+  it does not recognise, rather than rejecting the manifest. This is the
+  manifest-level counterpart of the item rule in Section 6.15, and is what
+  lets a later minor version (Section 5.7) add feed-level fields safely.
+- **Unsupported version.** Version handling is defined in Section 5.7.
+- **Invalid individual items.** A client MUST NOT discard an entire,
+  otherwise-valid feed solely because individual items are invalid.
+  Item-level handling is defined in Section 6.15.
+
+### 5.7 Protocol Versioning
+
+The `mmsp` field carries a `MAJOR.MINOR` version string.
+
+- **Minor versions are additive and backward-compatible.** A new MINOR
+  version within the same MAJOR version MUST only add optional fields,
+  item types, or capabilities. It MUST NOT remove a field, change the type
+  or meaning of an existing field, or make an existing optional field
+  required.
+- **Clients accept any minor version of a major version they implement.**
+  A client that implements major version N MUST accept any feed whose
+  version is `N.x`, regardless of the value of `x`, and MUST ignore
+  members it does not recognise (Sections 5.6 and 6.15). This is what makes
+  adding fields in a later minor version safe.
+- **Major versions may break compatibility.** A change to MAJOR signals a
+  break. A client that does not implement a feed's MAJOR version MUST NOT
+  process the manifest as if it understood it; it MUST reject the feed and
+  SHOULD inform the subscriber that the feed requires a newer client.
+- **Publishers MUST NOT introduce breaking changes within a major
+  version.** Any change that would break a conforming `N.x` client
+  requires incrementing MAJOR.
 
 ---
 
@@ -372,6 +491,30 @@ Clients that aggregate multiple sources SHOULD use `canonical_url` to
 deduplicate items. Two items with identical `canonical_url` values
 SHOULD be treated as the same piece of content.
 
+### 6.15 Item Validation and Partial-Feed Tolerance
+
+Real feeds contain occasional malformed items. A client MUST be tolerant
+of bad items without discarding the whole feed.
+
+- **Skip, do not reject.** If an item is missing a field REQUIRED by
+  Section 6.1, or carries a REQUIRED field of the wrong JSON type, the
+  client MUST skip that single item and MUST continue processing the
+  remaining items in the feed.
+- **Unknown members MUST be ignored.** A client MUST ignore any object
+  member it does not recognise, at every level of the item schema, rather
+  than rejecting the item. This is the forward-compatibility rule that
+  lets later minor versions (Section 5.7) and future extensions add fields
+  without breaking existing clients.
+- **Unknown item types degrade.** As defined in Section 6.3, an
+  unrecognised `type` value MUST be treated as `article` for display and
+  MUST NOT cause the item to be rejected.
+- **Invalid optional fields degrade.** If an OPTIONAL field is present but
+  malformed, the client SHOULD ignore that field and render the item
+  without it, rather than skipping the item.
+- **Observability.** A client SHOULD record how many items it skipped in a
+  given poll so the condition is diagnosable, and SHOULD NOT silently hide
+  a feed that yielded zero valid items from an otherwise successful fetch.
+
 ---
 
 ## 7. Source Types
@@ -478,8 +621,9 @@ Normative constraints:
 - The `min_interval_seconds` value MUST NOT be set below 300 by
   publishers. Clients MUST enforce a floor of 300 seconds regardless
   of the declared value.
-- Clients MUST NOT notify subscribers of new items without an explicit
-  subscriber action (opening the reader, manually refreshing).
+- Notification and presentation behaviour is not governed by this section.
+  Clients that commit to suppressing interruptive notifications do so under
+  the optional Calm Consumption Profile (Section 4.1).
 
 ### 8.2 Conditional GET
 
@@ -613,13 +757,24 @@ unless overridden by media metadata.
   reject non-HTTPS feed URLs.
 - Source URLs of type `rss`, `atom`, and `podcast` MUST use HTTPS.
   Clients SHOULD warn and MAY reject non-HTTPS source URLs.
-- Clients MUST send the following User-Agent header on all polls:
-  `User-Agent: MMSP/1.0`
-- Clients MUST NOT append client software identification to the
-  User-Agent header.
-- Clients MAY append a comment in parentheses for debugging purposes
-  only if the subscriber has explicitly opted into diagnostics mode;
-  this MUST NOT be enabled by default.
+- Clients MUST send a User-Agent header on all polls whose first token
+  identifies the protocol and version: `MMSP/<version>` (for this
+  revision, `MMSP/1.0`).
+- Clients SHOULD append a single product token identifying the client
+  software and its version, separated by a space, for example:
+  `User-Agent: MMSP/1.0 Meridian/2.3`. This lets a publisher's operator
+  distinguish, rate-limit, and contact the author of a specific
+  implementation that is behaving badly, which a uniform User-Agent makes
+  impossible.
+- To preserve subscriber privacy, the User-Agent MUST NOT carry any
+  information that identifies the subscriber or the individual
+  installation: no operating-system build string, no device identifier,
+  no per-install or per-user token, and nothing derived from subscriber
+  data. Permitted identification is limited to the coarse
+  {software name, software version} pair, which is shared by every user of
+  that client and therefore adds negligible per-subscriber entropy.
+- Clients MUST NOT vary the User-Agent per feed, per poll, or per
+  subscriber.
 
 ---
 
@@ -652,12 +807,32 @@ external entity expansion to prevent XML External Entity (XXE) attacks.
 Clients MUST enforce a maximum document size limit to prevent
 denial-of-service via large XML documents (billion laughs attack).
 
-### 12.5 Feed Authenticity
+### 12.5 Feed Authenticity (Known Limitation)
 
-This specification defines no mechanism for verifying that a feed
-served at a given URL is authoritative. Publishers concerned about feed
-impersonation SHOULD rely on HTTPS certificate validation and well-known
-URI registration to establish authenticity.
+This revision of MMSP defines no mechanism for verifying that a feed served
+at a given URL is authoritative. This is a known limitation, to be
+addressed in a future revision, rather than a settled position.
+
+HTTPS authenticates the transport to a host; it does not establish that the
+host is the legitimate publisher of a feed. An attacker who takes over a
+domain, a hosting account, or a network path (for example via DNS or BGP
+hijacking, or a lapsed and re-registered domain) can serve a feed under a
+previously trusted URL with a fully valid certificate. Well-known URI
+registration and certificate validation raise the bar but do not close this
+gap: a subscriber cannot today distinguish a genuine publisher from an
+attacker who has acquired control of the publisher's URL.
+
+Clients and subscribers MUST NOT treat the mere presence of a feed at an
+HTTPS URL as proof of publisher authenticity.
+
+A future revision is expected to define an OPTIONAL content-authenticity
+mechanism: a detached `signature` over a canonical serialisation of the
+feed or item, verified against a publisher key, most likely building on
+HTTP Message Signatures [RFC9421]. To keep that path open without a
+breaking change, the member name `signature` is reserved at both feed and
+item level by this document; clients MUST ignore it where present (Section
+6.15) until a future revision assigns it meaning, and publishers MUST NOT
+use `signature` for any other purpose.
 
 ---
 
@@ -734,6 +909,8 @@ This document registers the following Well-Known URI per [RFC8615]:
 - RSS 2.0 Specification, Harvard Berkman Center, 2003.
 - Atom Syndication Format, RFC 4287, December 2005.
 - JSON Feed Version 1.1, Brent Simmons and Manton Reece, 2020.
+- [RFC9421] Backman, A., Richer, J., Sporny, M., "HTTP Message
+  Signatures", RFC 9421, February 2024.
 
 ---
 

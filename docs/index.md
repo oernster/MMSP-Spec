@@ -21,8 +21,10 @@ MMSP is a pull-only semantic superset of RSS 2.0 and Atom, built around calm con
 - **Poll floor:** 300 seconds minimum
 - **12 item types:** video, audio, article, image, short, document, gallery, event, release, newsletter, course, livestream
 - **Backwards compatible:** any RSS 2.0 or Atom feed normalizes to MMSP item schema
+- **Forward compatible:** versioned `MAJOR.MINOR`; unknown item types and fields degrade gracefully instead of breaking clients
+- **Robust polling:** conditional GET (ETag / Last-Modified), 429 back-off, cursor pagination, and partial-feed tolerance for malformed items
 - **Discovery:** `/.well-known/mmsp.json` or HTML `<link rel="alternate">`
-- **User-Agent:** `MMSP/1.0`
+- **User-Agent:** `MMSP/<version>`, optionally a client token (e.g. `MMSP/1.0 Meridian/2.3`); never subscriber- or install-identifying
 
 ---
 
