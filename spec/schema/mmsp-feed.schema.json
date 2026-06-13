@@ -9,8 +9,8 @@
   "properties": {
     "mmsp": {
       "type": "string",
-      "const": "1.0",
-      "description": "Protocol version. MUST be '1.0' for this revision."
+      "pattern": "^1\\.\\d+$",
+      "description": "Protocol version. MUST be 1.x per Section 5.7; any 1.MINOR is accepted by a 1.x client."
     },
     "id": {
       "type": "string",
