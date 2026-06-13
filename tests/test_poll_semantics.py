@@ -206,9 +206,10 @@ class TestUserAgentValidation:
         ok, _ = validate_user_agent("MMSP/1.0")
         assert ok
 
-    def test_comment_appended_valid(self):
+    def test_comment_appended_invalid(self):
+        # Section 11 permits only a Name/Version product token, not a comment.
         ok, _ = validate_user_agent("MMSP/1.0 (debug-mode)")
-        assert ok
+        assert not ok
 
     def test_empty_string_invalid(self):
         ok, msg = validate_user_agent("")
@@ -220,8 +221,27 @@ class TestUserAgentValidation:
         assert not ok
         assert "MMSP/1.0" in msg
 
-    def test_client_info_appended_invalid(self):
-        ok, msg = validate_user_agent("MMSP/1.0 SuperReader/3.0")
+    def test_product_token_appended_valid(self):
+        # Section 11: clients SHOULD append a single product token.
+        ok, _ = validate_user_agent("MMSP/1.0 Meridian/2.3")
+        assert ok
+
+    def test_product_token_superreader_valid(self):
+        ok, _ = validate_user_agent("MMSP/1.0 SuperReader/3.0")
+        assert ok
+
+    def test_multiple_product_tokens_invalid(self):
+        ok, _ = validate_user_agent("MMSP/1.0 Meridian/2.3 Extra/1.0")
+        assert not ok
+
+    def test_subscriber_identifying_token_invalid(self):
+        # A per-install identifier appended as a third token must be rejected.
+        ok, _ = validate_user_agent("MMSP/1.0 Meridian/2.3 user-install-abc123")
+        assert not ok
+
+    def test_malformed_product_token_invalid(self):
+        # A trailing token without a Name/Version shape is not a product token.
+        ok, _ = validate_user_agent("MMSP/1.0 NoSlashHere")
         assert not ok
 
     def test_version_suffix_invalid(self):

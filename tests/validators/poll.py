@@ -2,11 +2,20 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
 POLL_FLOOR_SECONDS = 300
+
+# Section 11: the protocol token identifying this revision of MMSP.
+PROTOCOL_TOKEN = "MMSP/1.0"
+
+# A product token is a coarse {name, version} pair such as "Meridian/2.3".
+# Section 11 permits at most one of these after the protocol token, and nothing
+# else, so the User-Agent cannot carry subscriber-identifying information.
+_PRODUCT_TOKEN_RE = re.compile(r"^[A-Za-z][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._+-]*$")
 
 
 @dataclass
@@ -57,7 +66,7 @@ def can_poll(state: PollState, now: datetime | None = None) -> tuple[bool, str]:
 
 def build_request_headers(state: PollState) -> dict[str, str]:
     """Build HTTP headers for a poll request per MMSP spec."""
-    headers: dict[str, str] = {"User-Agent": "MMSP/1.0"}
+    headers: dict[str, str] = {"User-Agent": PROTOCOL_TOKEN}
     if state.etag:
         headers["If-None-Match"] = state.etag
     if state.last_modified:
@@ -99,17 +108,33 @@ def validate_user_agent(user_agent: str) -> tuple[bool, str]:
     """
     Validate a User-Agent header value per MMSP spec Section 11.
 
-    MUST be exactly 'MMSP/1.0' or 'MMSP/1.0 (...)' where (...) is a comment.
-    MUST NOT contain client software identification outside of a comment.
+    The first token MUST be the protocol token 'MMSP/1.0'. A client MAY append
+    at most one product token identifying the client software and its version,
+    for example 'MMSP/1.0 Meridian/2.3'. To preserve subscriber privacy, nothing
+    else is permitted: no second product token, no free comment, and no
+    operating-system, device, or per-install identifier.
     """
-    if not user_agent:
+    tokens = user_agent.split()
+    if not tokens:
         return False, "User-Agent header is missing"
-    if not user_agent.startswith("MMSP/1.0"):
-        return False, f"User-Agent must start with 'MMSP/1.0', got: {user_agent!r}"
-    remainder = user_agent[len("MMSP/1.0"):].strip()
-    if remainder and not (remainder.startswith("(") and remainder.endswith(")")):
+
+    if tokens[0] != PROTOCOL_TOKEN:
         return False, (
-            f"User-Agent may only append a parenthesised comment after 'MMSP/1.0', "
-            f"got: {user_agent!r}"
+            f"User-Agent first token must be {PROTOCOL_TOKEN!r}, got: {user_agent!r}"
+        )
+
+    if len(tokens) == 1:
+        return True, "valid"
+
+    if len(tokens) > 2:
+        return False, (
+            f"User-Agent may append at most one product token after "
+            f"{PROTOCOL_TOKEN!r}, got: {user_agent!r}"
+        )
+
+    if not _PRODUCT_TOKEN_RE.match(tokens[1]):
+        return False, (
+            f"trailing token must be a Name/Version product token, "
+            f"got: {tokens[1]!r}"
         )
     return True, "valid"
