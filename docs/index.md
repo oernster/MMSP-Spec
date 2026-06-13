@@ -14,17 +14,17 @@ MMSP is a pull-only semantic superset of RSS 2.0 and Atom, built around calm con
 
 MMSP is an independent, open community specification. The `draft-NN` versioning
 borrows IETF Internet-Draft naming as a familiar convention only: **MMSP has not
-been submitted to the IETF, is not an IETF work product, and is not affiliated
-with or endorsed by the IETF, the IESG, or ISOC.** "Pre-IETF" describes an
+been submitted to the IETF, is not an IETF work product and is not affiliated
+with or endorsed by the IETF, the IESG or ISOC.** "Pre-IETF" describes an
 intention to potentially pursue that track in future, not current standing.
 
 ---
 
-## Why MMSP, and not RSS, Atom, or JSON Feed?
+## Why MMSP and not RSS, Atom or JSON Feed?
 
-JSON Feed already proved the appetite for JSON-native syndication, but it stops
+JSON Feed already proved the appetite for JSON-native syndication but stops
 at the document: it is a *file format*. MMSP specifies the *protocol* around the
-format, and is built on four commitments those formats do not make:
+format and is built on four commitments those formats do not make:
 
 - **Calm consumption as a design constraint.** At the wire level MMSP is
   pull-only with no server-push mechanism and mandates a 300-second minimum poll
