@@ -4,9 +4,16 @@
 Internet-Draft: draft-mmsp-00
 Date:           June 2026
 Author:         MMSP Community
-Status:         Community Specification (Pre-IETF)
+Status:         Community Specification
 License:        Apache-2.0
 ```
+
+> **Status note.** MMSP is an independent, open community specification. The
+> `draft-NN` versioning borrows IETF Internet-Draft naming as a familiar
+> convention only: MMSP has not been submitted to the IETF, is not an IETF work
+> product, and is not affiliated with or endorsed by the IETF, the IESG, or
+> ISOC. "Pre-IETF" describes an intention to potentially pursue that track in
+> future, not current standing.
 
 ---
 
