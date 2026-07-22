@@ -7,7 +7,6 @@ theme: minima
 
 plugins:
   - jekyll-seo-tag
-  - jekyll-sitemap
 
 header_pages:
   - spec.md
