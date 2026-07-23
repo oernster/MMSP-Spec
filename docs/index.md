@@ -20,6 +20,29 @@ intention to potentially pursue that track in future, not current standing.
 
 ---
 
+## Why this exists
+
+RSS answered the early web's question: how do I follow a site's articles without visiting it?
+The current web poses a broader one. A publisher's output now spans video, audio, articles,
+images, releases and events across disconnected platforms and every push-based alternative
+monetises attention. RSS 2.0 and Atom model one content form well; everything else arrives
+through namespace extensions, platform APIs or not at all.
+
+MMSP is the answer as a protocol rather than a platform: JSON-based, pull-only and defined as a
+semantic superset of RSS 2.0 and Atom. Twelve first-class item types carry the multimedia model,
+formal JSON Schemas make a publisher's output mechanically verifiable, discovery works from a
+bare domain via `/.well-known/mmsp.json` and calm consumption is enforced at the wire level (no
+push, a 300 second poll floor) instead of being left as a cultural norm.
+
+The project is run like a standards effort: a versioned specification with RFC-style normative
+language, worked examples, a conformance suite targeting every normative statement and a working
+reference client, [Meridian](https://ernster.dev/meridian/), that proves the normalization rules
+against real feeds. The spec keeps the client honest; the client keeps the spec real.
+
+Full reasoning at [crankthecode.com](https://www.crankthecode.com/posts/mmsp).
+
+---
+
 ## Why MMSP and not RSS, Atom or JSON Feed?
 
 JSON Feed already proved the appetite for JSON-native syndication but stops
@@ -53,7 +76,7 @@ adoption costs nothing on the consumption side.
 - **12 item types:** video, audio, article, image, short, document, gallery, event, release, newsletter, course, livestream
 - **Backwards compatible:** any RSS 2.0 or Atom feed normalizes to MMSP item schema
 - **Forward compatible:** versioned `MAJOR.MINOR`; unknown item types and fields degrade gracefully instead of breaking clients
-- **Robust polling:** conditional GET (ETag / Last-Modified), 429 back-off, cursor pagination, and partial-feed tolerance for malformed items
+- **Robust polling:** conditional GET (ETag / Last-Modified), 429 back-off, cursor pagination and partial-feed tolerance for malformed items
 - **Discovery:** `/.well-known/mmsp.json` or HTML `<link rel="alternate">`
 - **User-Agent:** `MMSP/<version>`, optionally a client token (e.g. `MMSP/1.0 Meridian/2.3`); never subscriber- or install-identifying
 
