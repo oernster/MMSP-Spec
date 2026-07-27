@@ -5,6 +5,12 @@ baseurl: /MMSP-Spec
 lang: en
 theme: minima
 
+# Fail the build on malformed front matter instead of silently dropping it.
+# An unquoted title containing a colon is invalid YAML: Jekyll's default is to
+# warn and discard every key on the page, which silently loses permalink and
+# description and moves the page to an unintended URL.
+strict_front_matter: true
+
 plugins:
   - jekyll-seo-tag
 
