@@ -33,6 +33,12 @@ pytest
 
 Coverage target: 100% of normative spec statements.
 
+## Project Documentation
+
+- [IETF-PLAN.md](IETF-PLAN.md): the route from community draft to submission.
+- [TECH_DEBT.md](TECH_DEBT.md): the standing reference to what is still open, what is
+  deliberately left and what only looks like debt.
+
 ## Source Types
 
 | Type | Acquires from |
