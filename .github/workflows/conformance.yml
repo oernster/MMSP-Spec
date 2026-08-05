@@ -1,0 +1,31 @@
+name: Conformance
+
+# The deploy workflow gates publication on this suite, but it only fires on
+# pushes to main. A community specification takes changes by pull request, so
+# the suite has to run there too or a proposed change to the spec text reaches
+# main without anything checking it against the validators.
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run the conformance suite
+        run: python -m pytest
