@@ -41,10 +41,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The page title carries the draft identifier. That identifier lives in
+      # the name of the draft file. Deriving it here rather than repeating
+      # it means advancing to the next draft is a rename, not a rename plus an
+      # edit to this file: a hardcoded title would keep publishing the old
+      # draft number silently, with a green build, until someone noticed.
       - name: Inject spec into docs
         run: |
-          printf -- '---\nlayout: default\ntitle: "MMSP Specification: draft-mmsp-00"\ndescription: "Full text of the MultiMedia Subscription Protocol specification. Defines feed manifest schema, item types, source types, poll semantics, discovery, normalization and filter grammar."\npermalink: /spec/\n---\n\n' \
-            | cat - spec/draft-mmsp-00.md > docs/spec.md
+          matches=$(ls -1 spec/draft-mmsp-*.md | wc -l)
+          if [ "$matches" -ne 1 ]; then
+            echo "Expected exactly one spec/draft-mmsp-*.md, found $matches." >&2
+            exit 1
+          fi
+          spec_path=$(ls -1 spec/draft-mmsp-*.md)
+          draft=$(basename "$spec_path" .md)
+          printf -- '---\nlayout: default\ntitle: "MMSP Specification: %s"\ndescription: "Full text of the MultiMedia Subscription Protocol specification. Defines feed manifest schema, item types, source types, poll semantics, discovery, normalization and filter grammar."\npermalink: /spec/\n---\n\n' "$draft" \
+            | cat - "$spec_path" > docs/spec.md
 
       - uses: actions/configure-pages@v5
 

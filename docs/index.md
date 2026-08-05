@@ -10,7 +10,7 @@ keywords: "MMSP, multimedia subscription protocol, RSS, Atom, JSON feed, podcast
 A JSON-based protocol for subscribing to and consuming multimedia content feeds.
 MMSP is a pull-only semantic superset of RSS 2.0 and Atom, built around calm consumption as a first-class design constraint.
 
-**Status:** Community Specification, `draft-mmsp-00`
+**Status:** Community Specification, <!--DRAFT-->draft-mmsp-00<!--/DRAFT-->
 
 MMSP is an independent, open community specification. The `draft-NN` versioning
 borrows IETF Internet-Draft naming as a familiar convention only: **MMSP has not
@@ -38,6 +38,10 @@ The project is run like a standards effort: a versioned specification with RFC-s
 language, worked examples, a conformance suite targeting every normative statement and a working
 reference client, [Meridian](https://ernster.dev/meridian/), that proves the normalization rules
 against real feeds. The spec keeps the client honest; the client keeps the spec real.
+
+The suite is not decorative. It runs on every proposed change to the specification and it gates
+publication of this site, so the draft text you are reading has never been published while the
+tests proving it internally consistent were failing.
 
 Full reasoning at [crankthecode.com](https://www.crankthecode.com/posts/mmsp).
 

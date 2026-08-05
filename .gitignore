@@ -219,3 +219,6 @@ __marimo__/
 
 # Stray numeric files (shell accidents)
 /1
+
+# Working release notes for the pending change set, kept out of the repository
+NOTES.md

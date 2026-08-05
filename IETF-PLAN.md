@@ -10,37 +10,88 @@ This document tracks the milestones and process requirements for each phase.
 
 ## Phase 1: Community Specification (Current)
 
-**Goal:** Establish the specification, achieve two or more independent implementations,
-and build an implementer community before IETF submission.
+**Goal:** Establish the specification, achieve two or more independent
+implementations and build an implementer community before IETF submission.
 
 ### Milestones
 
 | # | Milestone | Status |
 |---|---|---|
-| 1.1 | Publish draft-mmsp-00.md to GitHub | In progress |
-| 1.2 | Publish JSON Schema for feed manifest and item | In progress |
-| 1.3 | Publish Python conformance test suite | In progress |
-| 1.4 | Publish reference validator implementation | Pending |
-| 1.5 | Publish public website at mmsp.dev (or equivalent) | Pending |
+| 1.1 | Publish the draft text to GitHub | Done |
+| 1.2 | Publish JSON Schema for feed manifest and item | Done |
+| 1.3 | Publish Python conformance test suite | Done |
+| 1.4 | Publish reference validator implementation | In progress |
+| 1.5 | Publish public website | Done |
 | 1.6 | Announce on relevant mailing lists (rss-public, atom-syntax, ietf-announce) | Pending |
 | 1.7 | Achieve two independent client implementations | Pending |
 | 1.8 | Achieve one independent server/publisher implementation | Pending |
 | 1.9 | Conduct interoperability testing between implementations | Pending |
-| 1.10 | Publish MMSP v0.2 incorporating implementation feedback | Pending |
+| 1.10 | Publish a revised draft incorporating implementation feedback | Pending |
+
+Notes on the milestones above:
+
+- 1.3 is done in a stronger sense than "the files exist". The suite runs on
+  every pull request and it gates deployment of the site, so the published
+  draft text cannot get ahead of the tests that check it.
+- 1.4 is partial. The validators the suite exercises live in
+  `tests/validators/` and are deliberately small; they exist to prove the
+  normative statements, not to be depended on. A validator published as a
+  usable artefact in its own right is still outstanding. Meridian is the
+  reference client and covers the consumption side.
+- 1.5 is done via GitHub Pages rather than the standalone domain originally
+  sketched here. The `mmsp.dev` URLs that remain in the JSON Schemas are
+  schema `$id` identifiers, not addresses anyone is expected to fetch; they
+  stay put: changing a published schema identifier is a breaking change.
 
 ### Deliverables
 
-- `spec/draft-mmsp-00.md`: Full specification text
+- The draft file under `spec/`: full specification text
 - `spec/schema/`: JSON Schema files for validation
 - `tests/`: Python conformance test suite
 - `spec/examples/`: Annotated feed examples
+- `.github/workflows/`: conformance on every pull request; a Pages deploy
+  gated on that same suite
+
+---
+
+## Advancing the Draft Number
+
+The draft identifier is the closest thing this repository has to a version;
+advancing it is an editorial act, not a mechanical bump. It is deliberately
+not automated end to end. What is automated is everything downstream of the
+decision, so that the decision is the only manual step.
+
+The single source of truth is the **name of the draft file** under `spec/`.
+
+To advance the draft:
+
+1. Rename `spec/draft-mmsp-NN.md` to the next number.
+2. Edit the `Internet-Draft:` line in that file's header block to match.
+   This is normative editorial text inside the specification and no script
+   rewrites it.
+3. Run `python stamp_draft.py` from the repository root. It derives the
+   identifier from the filename, refuses to continue if the header from step 2
+   disagrees with it and refreshes the delimited tokens in the site source
+   under `docs/`. It is idempotent and prints every file it touched.
+4. Update any prose in `README.md` or this file that names the draft by number
+   rather than describing it.
+
+The Pages workflow needs no change. It derives the injected page title from
+the same filename at build time, so the published specification page always
+carries the draft number of the file it was built from.
+
+The protocol version is a separate thing and is **not** advanced by this
+procedure. `mmsp` is normatively `"1.0"` for this revision, asserted in the
+draft text and enforced by both JSON Schemas and the versioning tests.
+Changing it changes the protocol; Section 5.7 governs when that is
+permitted.
 
 ---
 
 ## Phase 2: IETF Internet-Draft Submission
 
 **Goal:** Submit MMSP as an IETF Individual Submission Internet-Draft, seek
-Working Group adoption, and progress to RFC.
+Working Group adoption and progress to RFC.
 
 ### Prerequisites (must complete before submission)
 
@@ -59,7 +110,8 @@ Working Group adoption, and progress to RFC.
 2. Validate with `idnits` tool (checks formatting, boilerplate, references)
 3. Submit to IETF Datatracker as Individual Submission:
    `https://datatracker.ietf.org/submit/`
-4. Draft name: `draft-mmsp-00`
+4. Draft name: whatever the file under `spec/` is called at the time. See
+   Advancing the Draft Number above.
 5. Expiry: Internet-Drafts expire after 6 months. Refresh or progress.
 
 #### Step 2: Identify Relevant Working Group
@@ -85,7 +137,7 @@ or form a new one if adoption is sufficient.
 #### Step 4: Working Group Adoption
 
 - WG chairs call for adoption of the draft as a WG document
-- Requires WG consensus (not unanimous, but rough consensus)
+- Requires WG consensus (not unanimous but rough consensus)
 - Draft renamed: `draft-ietf-<wgname>-mmsp-00`
 
 #### Step 5: WG Development
@@ -151,14 +203,14 @@ When ready for IETF submission, convert using:
 
 ```bash
 pip install kramdown-rfc
-kdrfc spec/draft-mmsp-00.md
-# Produces: draft-mmsp-00.xml and draft-mmsp-00.txt
+kdrfc spec/draft-mmsp-*.md
+# Produces a .xml and a .txt named after the draft
 ```
 
 Validate with:
 ```bash
 pip install idnits
-idnits draft-mmsp-00.txt
+idnits draft-mmsp-*.txt
 ```
 
 ---
