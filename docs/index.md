@@ -43,7 +43,6 @@ The suite is not decorative. It runs on every proposed change to the specificati
 publication of this site, so the draft text you are reading has never been published while the
 tests proving it internally consistent were failing.
 
-Full reasoning at [crankthecode.com](https://www.crankthecode.com/posts/mmsp).
 
 ---
 
