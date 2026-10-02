@@ -21,6 +21,7 @@ _PRODUCT_TOKEN_RE = re.compile(r"^[A-Za-z][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9.
 @dataclass
 class PollState:
     """Tracks per-feed poll state for a client."""
+
     feed_url: str
     last_poll_time: datetime | None = None
     etag: str | None = None
@@ -77,7 +78,9 @@ def build_request_headers(state: PollState) -> dict[str, str]:
 def handle_response_headers(state: PollState, response_headers: dict[str, str]) -> None:
     """Update poll state from HTTP response headers."""
     etag = response_headers.get("ETag") or response_headers.get("etag")
-    last_modified = response_headers.get("Last-Modified") or response_headers.get("last-modified")
+    last_modified = response_headers.get("Last-Modified") or response_headers.get(
+        "last-modified"
+    )
     if etag:
         state.etag = etag
     if last_modified:
@@ -96,11 +99,13 @@ def handle_rate_limit(
         try:
             delay = int(retry_after)
             from datetime import timedelta
+
             state.back_off_until = now + timedelta(seconds=delay)
             return
         except ValueError:
             pass
     from datetime import timedelta
+
     state.back_off_until = now + timedelta(seconds=state.min_interval_seconds * 2)
 
 

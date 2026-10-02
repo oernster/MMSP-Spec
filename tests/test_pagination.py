@@ -15,7 +15,9 @@ class TestPaginationSchema:
 
     def test_valid_pagination_with_next_url(self, minimal_feed: dict) -> None:
         minimal_feed["pagination"] = {"cursor": "tok_abc123", "has_more": True}
-        minimal_feed["next_url"] = "https://example.com/.well-known/mmsp.json?before=tok_abc123"
+        minimal_feed["next_url"] = (
+            "https://example.com/.well-known/mmsp.json?before=tok_abc123"
+        )
         assert is_valid_feed(minimal_feed)
 
     def test_valid_pagination_has_more_false(self, minimal_feed: dict) -> None:

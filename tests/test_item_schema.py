@@ -42,11 +42,23 @@ class TestRequiredFields:
 
 
 class TestItemTypes:
-    @pytest.mark.parametrize("item_type", [
-        "video", "audio", "article", "image", "short",
-        "document", "gallery", "event", "release",
-        "newsletter", "course", "livestream",
-    ])
+    @pytest.mark.parametrize(
+        "item_type",
+        [
+            "video",
+            "audio",
+            "article",
+            "image",
+            "short",
+            "document",
+            "gallery",
+            "event",
+            "release",
+            "newsletter",
+            "course",
+            "livestream",
+        ],
+    )
     def test_valid_item_types(self, minimal_item, item_type):
         minimal_item["type"] = item_type
         assert is_valid_item(minimal_item)
@@ -128,11 +140,15 @@ class TestOptionalFields:
 
 class TestMediaObject:
     def test_valid_media(self, minimal_item):
-        minimal_item["media"] = [{"url": "https://cdn.example.com/v.mp4", "mime_type": "video/mp4"}]
+        minimal_item["media"] = [
+            {"url": "https://cdn.example.com/v.mp4", "mime_type": "video/mp4"}
+        ]
         assert is_valid_item(minimal_item)
 
     def test_media_url_must_be_https(self, minimal_item):
-        minimal_item["media"] = [{"url": "http://cdn.example.com/v.mp4", "mime_type": "video/mp4"}]
+        minimal_item["media"] = [
+            {"url": "http://cdn.example.com/v.mp4", "mime_type": "video/mp4"}
+        ]
         assert validate_item(minimal_item)
 
     def test_media_missing_url(self, minimal_item):
@@ -145,15 +161,34 @@ class TestMediaObject:
 
     def test_media_role_values(self, minimal_item):
         for role in ("primary", "alternate", "preview"):
-            minimal_item["media"] = [{"url": "https://cdn.example.com/v.mp4", "mime_type": "video/mp4", "role": role}]
+            minimal_item["media"] = [
+                {
+                    "url": "https://cdn.example.com/v.mp4",
+                    "mime_type": "video/mp4",
+                    "role": role,
+                }
+            ]
             assert is_valid_item(minimal_item)
 
     def test_media_size_bytes_accepted(self, minimal_item):
-        minimal_item["media"] = [{"url": "https://cdn.example.com/v.mp4", "mime_type": "video/mp4", "size_bytes": 104857600}]
+        minimal_item["media"] = [
+            {
+                "url": "https://cdn.example.com/v.mp4",
+                "mime_type": "video/mp4",
+                "size_bytes": 104857600,
+            }
+        ]
         assert is_valid_item(minimal_item)
 
     def test_media_multiple_variants(self, video_item):
-        video_item["media"].append({"url": "https://cdn.example.com/v-720p.mp4", "mime_type": "video/mp4", "quality_label": "720p", "role": "alternate"})
+        video_item["media"].append(
+            {
+                "url": "https://cdn.example.com/v-720p.mp4",
+                "mime_type": "video/mp4",
+                "quality_label": "720p",
+                "role": "alternate",
+            }
+        )
         assert is_valid_item(video_item)
 
 
@@ -163,7 +198,9 @@ class TestThumbnailObject:
         assert is_valid_item(minimal_item)
 
     def test_thumbnail_with_dimensions(self, minimal_item):
-        minimal_item["thumbnail"] = [{"url": "https://cdn.example.com/thumb.jpg", "width": 1280, "height": 720}]
+        minimal_item["thumbnail"] = [
+            {"url": "https://cdn.example.com/thumb.jpg", "width": 1280, "height": 720}
+        ]
         assert is_valid_item(minimal_item)
 
     def test_thumbnail_url_must_be_https(self, minimal_item):
@@ -195,21 +232,37 @@ class TestChapterObject:
         assert validate_item(minimal_item)
 
     def test_chapter_image_url_must_be_https(self, minimal_item):
-        minimal_item["chapters"] = [{"title": "Intro", "start_seconds": 0, "image_url": "http://cdn.example.com/ch.jpg"}]
+        minimal_item["chapters"] = [
+            {
+                "title": "Intro",
+                "start_seconds": 0,
+                "image_url": "http://cdn.example.com/ch.jpg",
+            }
+        ]
         assert validate_item(minimal_item)
 
 
 class TestTranscriptObject:
     def test_valid_transcript(self, minimal_item):
-        minimal_item["transcript"] = {"url": "https://cdn.example.com/t.txt", "mime_type": "text/plain"}
+        minimal_item["transcript"] = {
+            "url": "https://cdn.example.com/t.txt",
+            "mime_type": "text/plain",
+        }
         assert is_valid_item(minimal_item)
 
     def test_transcript_with_language(self, minimal_item):
-        minimal_item["transcript"] = {"url": "https://cdn.example.com/t.txt", "mime_type": "text/plain", "language": "en"}
+        minimal_item["transcript"] = {
+            "url": "https://cdn.example.com/t.txt",
+            "mime_type": "text/plain",
+            "language": "en",
+        }
         assert is_valid_item(minimal_item)
 
     def test_transcript_url_must_be_https(self, minimal_item):
-        minimal_item["transcript"] = {"url": "http://cdn.example.com/t.txt", "mime_type": "text/plain"}
+        minimal_item["transcript"] = {
+            "url": "http://cdn.example.com/t.txt",
+            "mime_type": "text/plain",
+        }
         assert validate_item(minimal_item)
 
     def test_transcript_missing_url(self, minimal_item):
@@ -219,28 +272,53 @@ class TestTranscriptObject:
 
 class TestCaptionObject:
     def test_valid_caption(self, minimal_item):
-        minimal_item["captions"] = [{"url": "https://cdn.example.com/sub.vtt", "mime_type": "text/vtt", "language": "en"}]
+        minimal_item["captions"] = [
+            {
+                "url": "https://cdn.example.com/sub.vtt",
+                "mime_type": "text/vtt",
+                "language": "en",
+            }
+        ]
         assert is_valid_item(minimal_item)
 
     def test_caption_missing_language(self, minimal_item):
-        minimal_item["captions"] = [{"url": "https://cdn.example.com/sub.vtt", "mime_type": "text/vtt"}]
+        minimal_item["captions"] = [
+            {"url": "https://cdn.example.com/sub.vtt", "mime_type": "text/vtt"}
+        ]
         assert validate_item(minimal_item)
 
     def test_caption_url_must_be_https(self, minimal_item):
-        minimal_item["captions"] = [{"url": "http://cdn.example.com/sub.vtt", "mime_type": "text/vtt", "language": "en"}]
+        minimal_item["captions"] = [
+            {
+                "url": "http://cdn.example.com/sub.vtt",
+                "mime_type": "text/vtt",
+                "language": "en",
+            }
+        ]
         assert validate_item(minimal_item)
 
     def test_multiple_caption_languages(self, minimal_item):
         minimal_item["captions"] = [
-            {"url": "https://cdn.example.com/sub.en.vtt", "mime_type": "text/vtt", "language": "en"},
-            {"url": "https://cdn.example.com/sub.fr.vtt", "mime_type": "text/vtt", "language": "fr"},
+            {
+                "url": "https://cdn.example.com/sub.en.vtt",
+                "mime_type": "text/vtt",
+                "language": "en",
+            },
+            {
+                "url": "https://cdn.example.com/sub.fr.vtt",
+                "mime_type": "text/vtt",
+                "language": "fr",
+            },
         ]
         assert is_valid_item(minimal_item)
 
 
 class TestSeriesObject:
     def test_valid_series(self, minimal_item):
-        minimal_item["series"] = {"id": "https://example.com/series/1", "title": "My Series"}
+        minimal_item["series"] = {
+            "id": "https://example.com/series/1",
+            "title": "My Series",
+        }
         assert is_valid_item(minimal_item)
 
     def test_series_with_episode(self, minimal_item):
@@ -273,7 +351,10 @@ class TestContentRating:
         assert validate_item(minimal_item)
 
     def test_rating_with_descriptors(self, minimal_item):
-        minimal_item["content_rating"] = {"rating": "mature", "descriptors": ["violence", "language"]}
+        minimal_item["content_rating"] = {
+            "rating": "mature",
+            "descriptors": ["violence", "language"],
+        }
         assert is_valid_item(minimal_item)
 
     def test_spoiler_flag(self, minimal_item):
@@ -323,22 +404,37 @@ class TestPaywall:
 
 class TestSourceMeta:
     def test_valid_source_meta(self, minimal_item):
-        minimal_item["source"] = {"type": "rss", "feed_url": "https://example.com/feed.xml"}
+        minimal_item["source"] = {
+            "type": "rss",
+            "feed_url": "https://example.com/feed.xml",
+        }
         assert is_valid_item(minimal_item)
 
     def test_source_meta_with_title(self, minimal_item):
-        minimal_item["source"] = {"type": "rss", "feed_url": "https://example.com/feed.xml", "feed_title": "Example Feed"}
+        minimal_item["source"] = {
+            "type": "rss",
+            "feed_url": "https://example.com/feed.xml",
+            "feed_title": "Example Feed",
+        }
         assert is_valid_item(minimal_item)
 
     def test_source_invalid_type(self, minimal_item):
-        minimal_item["source"] = {"type": "scrape", "feed_url": "https://example.com/feed.xml"}
+        minimal_item["source"] = {
+            "type": "scrape",
+            "feed_url": "https://example.com/feed.xml",
+        }
         assert validate_item(minimal_item)
 
     def test_source_missing_feed_url(self, minimal_item):
         minimal_item["source"] = {"type": "rss"}
         assert validate_item(minimal_item)
 
-    @pytest.mark.parametrize("source_type", ["mfeed", "rss", "atom", "podcast", "platform"])
+    @pytest.mark.parametrize(
+        "source_type", ["mfeed", "rss", "atom", "podcast", "platform"]
+    )
     def test_all_source_types(self, minimal_item, source_type):
-        minimal_item["source"] = {"type": source_type, "feed_url": "https://example.com/feed"}
+        minimal_item["source"] = {
+            "type": source_type,
+            "feed_url": "https://example.com/feed",
+        }
         assert is_valid_item(minimal_item)

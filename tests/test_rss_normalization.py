@@ -5,7 +5,6 @@ from tests.validators.normalizer import normalize_rss_feed, normalize_rss_item
 from tests.validators.schema import is_valid_item
 from xml.etree import ElementTree as ET
 
-
 FEED_URL = "https://example.com/feed.xml"
 
 
@@ -125,6 +124,7 @@ class TestRssNormalizationProducesValidItems:
 class TestRssPodcastNormalization:
     def test_podcast_type_is_audio(self, rss_audio_xml):
         from tests.validators.normalizer import normalize_rss_feed
+
         items = normalize_rss_feed(rss_audio_xml, FEED_URL, source_type="podcast")
         assert items[0]["type"] == "audio"
 
@@ -160,11 +160,16 @@ class TestRssPodcastNormalization:
 
     def test_itunes_image_mapped_to_thumbnail(self, rss_audio_xml):
         items = normalize_rss_feed(rss_audio_xml, FEED_URL, source_type="podcast")
-        assert items[0]["thumbnail"][0]["url"] == "https://cdn.example.com/podcast-art.jpg"
+        assert (
+            items[0]["thumbnail"][0]["url"] == "https://cdn.example.com/podcast-art.jpg"
+        )
 
     def test_podcast_transcript_mapped(self, rss_audio_xml):
         items = normalize_rss_feed(rss_audio_xml, FEED_URL, source_type="podcast")
-        assert items[0]["transcript"]["url"] == "https://cdn.example.com/ep1-transcript.txt"
+        assert (
+            items[0]["transcript"]["url"]
+            == "https://cdn.example.com/ep1-transcript.txt"
+        )
         assert items[0]["transcript"]["mime_type"] == "text/plain"
         assert items[0]["transcript"]["language"] == "en"
 
@@ -252,15 +257,21 @@ class TestRssItunesDurationFormats:
           </item></channel></rss>"""
 
     def test_hh_mm_ss_duration(self):
-        items = normalize_rss_feed(self._make_xml("1:00:00"), FEED_URL, source_type="podcast")
+        items = normalize_rss_feed(
+            self._make_xml("1:00:00"), FEED_URL, source_type="podcast"
+        )
         assert items[0]["duration"] == 3600
 
     def test_mm_ss_duration(self):
-        items = normalize_rss_feed(self._make_xml("60:00"), FEED_URL, source_type="podcast")
+        items = normalize_rss_feed(
+            self._make_xml("60:00"), FEED_URL, source_type="podcast"
+        )
         assert items[0]["duration"] == 3600
 
     def test_invalid_duration_omitted(self):
-        items = normalize_rss_feed(self._make_xml("abc:def:ghi"), FEED_URL, source_type="podcast")
+        items = normalize_rss_feed(
+            self._make_xml("abc:def:ghi"), FEED_URL, source_type="podcast"
+        )
         assert "duration" not in items[0]
 
 
@@ -436,7 +447,9 @@ class TestRssThumbnailEdge:
 
 class TestRssSeriesEdge:
     def _make_series_xml(self, episode: str | None, season: str | None) -> str:
-        ep_tag = f"<itunes:episode>{episode}</itunes:episode>" if episode is not None else ""
+        ep_tag = (
+            f"<itunes:episode>{episode}</itunes:episode>" if episode is not None else ""
+        )
         s_tag = f"<itunes:season>{season}</itunes:season>" if season is not None else ""
         return f"""<rss version="2.0"
              xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
@@ -451,22 +464,30 @@ class TestRssSeriesEdge:
           </item></channel></rss>"""
 
     def test_episode_only_no_season(self):
-        items = normalize_rss_feed(self._make_series_xml("5", None), FEED_URL, source_type="podcast")
+        items = normalize_rss_feed(
+            self._make_series_xml("5", None), FEED_URL, source_type="podcast"
+        )
         assert items[0]["series"]["episode_number"] == 5
         assert "season_number" not in items[0]["series"]
 
     def test_season_only_no_episode(self):
-        items = normalize_rss_feed(self._make_series_xml(None, "2"), FEED_URL, source_type="podcast")
+        items = normalize_rss_feed(
+            self._make_series_xml(None, "2"), FEED_URL, source_type="podcast"
+        )
         assert items[0]["series"]["season_number"] == 2
         assert "episode_number" not in items[0]["series"]
 
     def test_episode_value_error_omitted(self):
-        items = normalize_rss_feed(self._make_series_xml("abc", "1"), FEED_URL, source_type="podcast")
+        items = normalize_rss_feed(
+            self._make_series_xml("abc", "1"), FEED_URL, source_type="podcast"
+        )
         assert "episode_number" not in items[0]["series"]
         assert items[0]["series"]["season_number"] == 1
 
     def test_season_value_error_omitted(self):
-        items = normalize_rss_feed(self._make_series_xml("1", "abc"), FEED_URL, source_type="podcast")
+        items = normalize_rss_feed(
+            self._make_series_xml("1", "abc"), FEED_URL, source_type="podcast"
+        )
         assert items[0]["series"]["episode_number"] == 1
         assert "season_number" not in items[0]["series"]
 

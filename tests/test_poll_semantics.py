@@ -128,7 +128,10 @@ class TestRequestHeaders:
         assert headers["If-None-Match"] == '"abc123"'
 
     def test_last_modified_included(self):
-        state = PollState(feed_url="https://example.com/feed", last_modified="Mon, 01 Jun 2026 10:00:00 GMT")
+        state = PollState(
+            feed_url="https://example.com/feed",
+            last_modified="Mon, 01 Jun 2026 10:00:00 GMT",
+        )
         headers = build_request_headers(state)
         assert headers["If-Modified-Since"] == "Mon, 01 Jun 2026 10:00:00 GMT"
 
@@ -151,7 +154,9 @@ class TestHandleResponseHeaders:
 
     def test_last_modified_stored(self):
         state = PollState(feed_url="https://example.com/feed")
-        handle_response_headers(state, {"Last-Modified": "Mon, 01 Jun 2026 10:00:00 GMT"})
+        handle_response_headers(
+            state, {"Last-Modified": "Mon, 01 Jun 2026 10:00:00 GMT"}
+        )
         assert state.last_modified == "Mon, 01 Jun 2026 10:00:00 GMT"
 
     def test_last_poll_time_updated(self):

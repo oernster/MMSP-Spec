@@ -29,20 +29,22 @@ def _load_schemas() -> tuple[dict, dict]:
 
 def _build_registry() -> Registry:
     feed_schema, item_schema = _load_schemas()
-    registry = Registry().with_resources([
-        (
-            "https://mmsp.dev/schema/1.0/feed",
-            Resource.from_contents(feed_schema),
-        ),
-        (
-            "https://mmsp.dev/schema/1.0/item",
-            Resource.from_contents(item_schema),
-        ),
-        (
-            "mmsp-item.schema.json",
-            Resource.from_contents(item_schema),
-        ),
-    ])
+    registry = Registry().with_resources(
+        [
+            (
+                "https://mmsp.dev/schema/1.0/feed",
+                Resource.from_contents(feed_schema),
+            ),
+            (
+                "https://mmsp.dev/schema/1.0/item",
+                Resource.from_contents(item_schema),
+            ),
+            (
+                "mmsp-item.schema.json",
+                Resource.from_contents(item_schema),
+            ),
+        ]
+    )
     return registry
 
 
@@ -107,9 +109,7 @@ def validate_item_tolerant(
     _, item_schema = _load_schemas()
     required_fields: list[str] = item_schema.get("required", [])
     known_types: list[str] = (
-        item_schema.get("properties", {})
-        .get("type", {})
-        .get("enum", [])
+        item_schema.get("properties", {}).get("type", {}).get("enum", [])
     )
     warnings: list[str] = []
 

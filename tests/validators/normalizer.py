@@ -106,18 +106,18 @@ def normalize_rss_item(
 
     podcast_transcript_el = item_el.find(_ns("transcript", PODCAST_NS))
 
-    categories = [
-        el.text.strip()
-        for el in item_el.findall("category")
-        if el.text
-    ]
+    categories = [el.text.strip() for el in item_el.findall("category") if el.text]
 
     mime_type = None
     media: list[dict] = []
 
     if enclosure_url:
         mime_type = enclosure_type
-        entry: dict[str, Any] = {"url": enclosure_url, "mime_type": enclosure_type or "application/octet-stream", "role": "primary"}
+        entry: dict[str, Any] = {
+            "url": enclosure_url,
+            "mime_type": enclosure_type or "application/octet-stream",
+            "role": "primary",
+        }
         if enclosure_length:
             try:
                 entry["size_bytes"] = int(enclosure_length)
@@ -131,7 +131,11 @@ def normalize_rss_item(
         if mc_url:
             if not mime_type:
                 mime_type = mc_type
-            mc_entry: dict[str, Any] = {"url": mc_url, "mime_type": mc_type or "application/octet-stream", "role": "primary"}
+            mc_entry: dict[str, Any] = {
+                "url": mc_url,
+                "mime_type": mc_type or "application/octet-stream",
+                "role": "primary",
+            }
             mc_duration = media_content_el.get("duration")
             if mc_duration:
                 try:
@@ -169,7 +173,9 @@ def normalize_rss_item(
     if source_type == "podcast":
         item_type = "audio"
 
-    item_id = guid if guid.startswith("http") else f"{feed_url}#{guid}" if guid else link
+    item_id = (
+        guid if guid.startswith("http") else f"{feed_url}#{guid}" if guid else link
+    )
 
     result: dict[str, Any] = {
         "id": item_id,
@@ -234,7 +240,9 @@ def normalize_rss_item(
     return result
 
 
-def normalize_rss_feed(xml_text: str, feed_url: str, source_type: str = "rss") -> list[dict[str, Any]]:
+def normalize_rss_feed(
+    xml_text: str, feed_url: str, source_type: str = "rss"
+) -> list[dict[str, Any]]:
     """Parse RSS XML and normalize all items. Returns list of MMSP items."""
     parser = ET.XMLParser()
     root = ET.fromstring(xml_text.encode(), parser=parser)
@@ -242,9 +250,15 @@ def normalize_rss_feed(xml_text: str, feed_url: str, source_type: str = "rss") -
     if channel is None:
         return []
     feed_title_el = channel.find("title")
-    feed_title = feed_title_el.text.strip() if feed_title_el is not None and feed_title_el.text else None
+    feed_title = (
+        feed_title_el.text.strip()
+        if feed_title_el is not None and feed_title_el.text
+        else None
+    )
     items = channel.findall("item")
-    return [normalize_rss_item(item, feed_url, feed_title, source_type) for item in items]
+    return [
+        normalize_rss_item(item, feed_url, feed_title, source_type) for item in items
+    ]
 
 
 def normalize_atom_entry(
@@ -263,7 +277,9 @@ def normalize_atom_entry(
     title = text("title") or ""
     summary = text("summary")
     content_el = entry_el.find(f"{{{ns}}}content")
-    content = content_el.text.strip() if content_el is not None and content_el.text else None
+    content = (
+        content_el.text.strip() if content_el is not None and content_el.text else None
+    )
     description = content or summary
 
     published = _parse_iso_date(text("published"))
@@ -275,7 +291,9 @@ def normalize_atom_entry(
     if author_el is not None:
         name_el = author_el.find(f"{{{ns}}}name")
         uri_el = author_el.find(f"{{{ns}}}uri")
-        author_name = name_el.text.strip() if name_el is not None and name_el.text else None
+        author_name = (
+            name_el.text.strip() if name_el is not None and name_el.text else None
+        )
         author_url = uri_el.text.strip() if uri_el is not None and uri_el.text else None
 
     link_url = None
@@ -356,6 +374,10 @@ def normalize_atom_feed(xml_text: str, feed_url: str) -> list[dict[str, Any]]:
     root = ET.fromstring(xml_text.encode())
     ns = ATOM_NS
     feed_title_el = root.find(f"{{{ns}}}title")
-    feed_title = feed_title_el.text.strip() if feed_title_el is not None and feed_title_el.text else None
+    feed_title = (
+        feed_title_el.text.strip()
+        if feed_title_el is not None and feed_title_el.text
+        else None
+    )
     entries = root.findall(f"{{{ns}}}entry")
     return [normalize_atom_entry(entry, feed_url, feed_title, ns) for entry in entries]

@@ -22,9 +22,7 @@ class TestMixedItemFeed:
         result, warnings = validate_item_tolerant(bad_item)
         assert result is None
 
-    def test_mixed_feed_yields_only_valid_items(
-        self, minimal_item: dict
-    ) -> None:
+    def test_mixed_feed_yields_only_valid_items(self, minimal_item: dict) -> None:
         bad_item = {"type": "article"}  # missing id, title, url, published
         items = [minimal_item, bad_item]
         valid = [

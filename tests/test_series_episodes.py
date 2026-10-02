@@ -130,6 +130,7 @@ class TestCanonicalUrl:
             "canonical_url": canonical,
         }
         from tests.validators.schema import is_valid_item
+
         assert is_valid_item(item_a)
         assert is_valid_item(item_b)
         assert item_a["canonical_url"] == item_b["canonical_url"]

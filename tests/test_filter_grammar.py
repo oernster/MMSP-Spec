@@ -8,7 +8,6 @@ from tests.validators.filter import (
     filter_items,
 )
 
-
 VIDEO_ITEM = {
     "id": "https://example.com/v1",
     "type": "video",
@@ -67,11 +66,23 @@ class TestTypeFilter:
     def test_type_article_no_match_video(self):
         assert not apply_filter("type:article", VIDEO_ITEM)
 
-    @pytest.mark.parametrize("item_type", [
-        "video", "audio", "article", "image", "short",
-        "document", "gallery", "event", "release",
-        "newsletter", "course", "livestream",
-    ])
+    @pytest.mark.parametrize(
+        "item_type",
+        [
+            "video",
+            "audio",
+            "article",
+            "image",
+            "short",
+            "document",
+            "gallery",
+            "event",
+            "release",
+            "newsletter",
+            "course",
+            "livestream",
+        ],
+    )
     def test_all_type_values_parseable(self, item_type):
         node = compile_filter(f"type:{item_type}")
         assert node is not None
@@ -168,10 +179,14 @@ class TestPublishedFilter:
         assert apply_filter("published:<=2026-12-31T23:59:59Z", VIDEO_ITEM)
 
     def test_published_range_match(self):
-        assert apply_filter("published:[2026-01-01T00:00:00Z,2026-12-31T23:59:59Z]", VIDEO_ITEM)
+        assert apply_filter(
+            "published:[2026-01-01T00:00:00Z,2026-12-31T23:59:59Z]", VIDEO_ITEM
+        )
 
     def test_published_range_no_match(self):
-        assert not apply_filter("published:[2025-01-01T00:00:00Z,2025-12-31T23:59:59Z]", VIDEO_ITEM)
+        assert not apply_filter(
+            "published:[2025-01-01T00:00:00Z,2025-12-31T23:59:59Z]", VIDEO_ITEM
+        )
 
     def test_published_absent_no_match(self):
         item = {**VIDEO_ITEM}
@@ -184,10 +199,14 @@ class TestPublishedFilter:
     def test_published_range_null_published_returns_false(self):
         item = {**VIDEO_ITEM}
         del item["published"]
-        assert not apply_filter("published:[2026-01-01T00:00:00Z,2026-12-31T23:59:59Z]", item)
+        assert not apply_filter(
+            "published:[2026-01-01T00:00:00Z,2026-12-31T23:59:59Z]", item
+        )
 
     def test_published_range_bad_bounds_returns_false(self):
-        assert not apply_filter("published:[2026-13-01T00:00:00Z,2027-01-01T00:00:00Z]", VIDEO_ITEM)
+        assert not apply_filter(
+            "published:[2026-13-01T00:00:00Z,2027-01-01T00:00:00Z]", VIDEO_ITEM
+        )
 
 
 class TestKeywordFilter:
@@ -253,7 +272,7 @@ class TestBooleanOperators:
         assert not apply_filter(expr, VIDEO_ITEM)
 
     def test_not_with_parentheses(self):
-        expr = 'NOT (type:audio AND lang:fr)'
+        expr = "NOT (type:audio AND lang:fr)"
         assert apply_filter(expr, VIDEO_ITEM)
         assert not apply_filter(expr, EXPLICIT_ITEM)
 

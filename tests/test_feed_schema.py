@@ -120,11 +120,15 @@ class TestAuthorObject:
         assert is_valid_feed(minimal_feed)
 
     def test_author_with_url(self, minimal_feed):
-        minimal_feed["authors"] = [{"name": "Test Author", "url": "https://example.com/author"}]
+        minimal_feed["authors"] = [
+            {"name": "Test Author", "url": "https://example.com/author"}
+        ]
         assert is_valid_feed(minimal_feed)
 
     def test_author_url_must_be_https(self, minimal_feed):
-        minimal_feed["authors"] = [{"name": "Test Author", "url": "http://example.com/author"}]
+        minimal_feed["authors"] = [
+            {"name": "Test Author", "url": "http://example.com/author"}
+        ]
         errors = validate_feed(minimal_feed)
         assert errors
 

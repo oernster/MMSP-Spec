@@ -7,9 +7,18 @@ from datetime import datetime, timezone
 from typing import Any
 
 ITEM_TYPES = {
-    "video", "audio", "article", "image", "short",
-    "document", "gallery", "event", "release",
-    "newsletter", "course", "livestream",
+    "video",
+    "audio",
+    "article",
+    "image",
+    "short",
+    "document",
+    "gallery",
+    "event",
+    "release",
+    "newsletter",
+    "course",
+    "livestream",
 }
 RATING_VALUES = {"general", "teen", "mature", "explicit"}
 
@@ -20,19 +29,19 @@ class FilterError(ValueError):
 
 class _Tokenizer:
     TOKEN_RE = re.compile(
-        r'(?P<LPAREN>\()'
-        r'|(?P<RPAREN>\))'
-        r'|(?P<AND>\bAND\b)'
-        r'|(?P<OR>\bOR\b)'
-        r'|(?P<NOT>\bNOT\b)'
-        r'|(?P<FIELD>type|tag|author|lang|duration|published|keyword|rating)'
-        r'|(?P<COLON>:)'
+        r"(?P<LPAREN>\()"
+        r"|(?P<RPAREN>\))"
+        r"|(?P<AND>\bAND\b)"
+        r"|(?P<OR>\bOR\b)"
+        r"|(?P<NOT>\bNOT\b)"
+        r"|(?P<FIELD>type|tag|author|lang|duration|published|keyword|rating)"
+        r"|(?P<COLON>:)"
         r'|(?P<QUOTED>"[^"]*")'
-        r'|(?P<RANGE>\[[\d\-T:Z.+]+,[\d\-T:Z.+]+\])'
-        r'|(?P<GTE>>=)'
-        r'|(?P<LTE><=)'
+        r"|(?P<RANGE>\[[\d\-T:Z.+]+,[\d\-T:Z.+]+\])"
+        r"|(?P<GTE>>=)"
+        r"|(?P<LTE><=)"
         r'|(?P<TOKEN>[^\s\(\)"]+)'
-        r'|(?P<WS>\s+)',
+        r"|(?P<WS>\s+)",
     )
 
     def __init__(self, text: str) -> None:
@@ -170,7 +179,9 @@ def _evaluate_node(node: dict, item: dict[str, Any]) -> bool:
     op = node["op"]
 
     if op == "AND":
-        return _evaluate_node(node["left"], item) and _evaluate_node(node["right"], item)
+        return _evaluate_node(node["left"], item) and _evaluate_node(
+            node["right"], item
+        )
     if op == "OR":
         return _evaluate_node(node["left"], item) or _evaluate_node(node["right"], item)
     if op == "NOT":
@@ -187,8 +198,7 @@ def _evaluate_node(node: dict, item: dict[str, Any]) -> bool:
 
     if field == "author":
         return any(
-            a.get("name", "").lower() == value.lower()
-            for a in item.get("authors", [])
+            a.get("name", "").lower() == value.lower() for a in item.get("authors", [])
         )
 
     if field == "lang":

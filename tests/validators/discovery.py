@@ -5,7 +5,6 @@ from __future__ import annotations
 from html.parser import HTMLParser
 from urllib.parse import urljoin, urlparse
 
-
 WELL_KNOWN_PATH = "/.well-known/mmsp.json"
 MMSP_MIME_TYPE = "application/mmsp+json"
 RSS_MIME_TYPE = "application/rss+xml"
