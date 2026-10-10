@@ -14,6 +14,12 @@ strict_front_matter: true
 plugins:
   - jekyll-seo-tag
 
+# jekyll-seo-tag puts this on every page as the social preview image. The icon
+# is square, so the Twitter card is the small one rather than the cropped large.
+image: /assets/images/MMSP-icon.png
+twitter:
+  card: summary
+
 header_pages:
   - spec.md
 
