@@ -14,11 +14,22 @@ strict_front_matter: true
 plugins:
   - jekyll-seo-tag
 
-# jekyll-seo-tag puts this on every page as the social preview image. The icon
-# is square, so the Twitter card is the small one rather than the cropped large.
-image: /assets/images/MMSP-icon.png
-twitter:
-  card: summary
+# The social preview image for every page. jekyll-seo-tag reads the image from
+# the PAGE only, so it is given to every page here as a front matter default;
+# a site-level image key is ignored. The icon is square, so the Twitter card is
+# the small one rather than the cropped large. It also sits on the page: a
+# site-level twitter key would emit a twitter:site tag with an empty handle.
+defaults:
+  - scope:
+      path: ""
+    values:
+      image:
+        path: /assets/images/MMSP-icon.png
+        width: 1024
+        height: 1024
+        alt: MMSP icon
+      twitter:
+        card: summary
 
 header_pages:
   - spec.md
